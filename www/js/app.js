@@ -13,35 +13,6 @@ window.requestAnimFrame = (function(){
           };
 })();
 
-
-VR8.Buffer = function(gl){
-  var vtxb = null; 
-  var draw_type = gl.STATIC_DRAW;
-  
-  var VERTEX_SIZE = 3;
-  return {
-    buffer: null,
-    type: function(t){
-      if(t === 'static')
-        draw_type = gl.STATIC_DRAW;
-    },
-    
-    upload_geometry: function(array){
-      vtxb = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, vtxb);
-      gl.bufferData(gl.ARRAY_BUFFER, 
-                    new Float32Array(array), 
-                    draw_type);
-      
-      vtxb.components = array.length / VERTEX_SIZE; 
-      vtxb.vertex = VERTEX_SIZE;
-      this.buffer = vtxb;
-      return this;
-    }
-  }
-};
-
-
 VR8.Shader = function(name_vertex, name_fragment){
   var gl = VR8.gl;
 
@@ -119,7 +90,7 @@ VR8.GFX = function(canvas){
     gl = _canvas.getContext("experimental-webgl");
     gl.viewportWidth = _canvas.width;
     gl.viewportHeight = _canvas.height;
-    VR8.gl = gl;
+    VR8.webGL = gl;
 
   }catch(e){
     console.log(e);
@@ -186,6 +157,11 @@ VR8.Camera = function(){
  var entity = new VR8.Entity2D();
  
  var x = 0;
+
+
+
+
+
 
 function init(){
  entity.shader(shader);
