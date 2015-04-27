@@ -1,6 +1,6 @@
 var VR8 = VR8 || {};
 
-VR8.Core = function(el){
+VR8.Core = function(canvas){
 
   function init(){
     var _canvas = canvas, gl; 
@@ -24,19 +24,22 @@ VR8.Scene2D = function(w,h){
   var Width  = w; 
   var Height = h;
   var gl = VR8.webGL;
-  this.clean = function(){
   
+  this.setShader = function(){
+    
+  };  
+  
+  this.clean = function(){
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT); 
   }
 
   this.render = function(){
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.viewport(0, 0, Width, Height);
-    gl.clear(gl.COLOR_BUFFER_BIT); 
     o.shader.ugpu(o.position, VR8.Camera().ortho());	
     gl.bindBuffer(gl.ARRAY_BUFFER,o.geometry.buffer );
     gl.vertexAttribPointer(o.shader.vpos, o.geometry.buffer.vertex, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, o.geometry.buffer.components);
-
   }
 }
 
