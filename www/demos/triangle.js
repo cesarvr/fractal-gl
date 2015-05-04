@@ -69,7 +69,7 @@
     vertex = vertex.concat([p1.x, p1.y, 0.0]);
   }
   
-  sierpinski( {x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 9 );
+  sierpinski( {x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 6 );
   //draw_triangle( {x: 0.0, y: -20.0 }, {x: -15.0, y:20.0}, {x:15.0, y: 20.0});
 
 
@@ -95,7 +95,7 @@
 
     scene.clean();
     //entity.varsGL.P = transform.scaling(1+s,1+s,1+s).m();
-    entity.varsGL.P   = transform.scaling(1+s,1+s,1+s).multiply( transform.translate(25-s,20-s,0));
+   // entity.varsGL.P   = transform.scaling(1+s,1+s,1+s).multiply( transform.translate(25-s,20-s,0));
      //entity.varsGL.P = transform.rotate_x(s).m(); 
     scene.render(entity);
   }
