@@ -7,7 +7,7 @@
  *
  * */
 
-czmath.transform = {
+VR8.transform = {
   _mm: Math,
   ortho: function(left, right, 
                   bottom, top, 
@@ -28,19 +28,19 @@ czmath.transform = {
   },
 
   scaling: function(x,y,z){
-    var mat4 = new czmath.matrix4();
+    var mat4 = new VR8.Matrix4();
     mat4.set_identity().touch([0,5,10], [x,y,z]);
     return mat4;
   },
   
   translate: function(x,y,z){
-    var mat4 = new czmath.matrix4().set_identity();
+    var mat4 = new VR8.Matrix4().set_identity();
     return mat4.touch([12,13,14], [x,y,z]);
   },
 
   rotate_x: function(a){
-    var mat4 = new czmath.matrix4();
-
+    var mat4 = new VR8.Matrix4();
+    var _mm = this._mm;
     mat4.set_identity().
       touch([10,14,11,15],[_mm.cos(a),-_mm.sin(a),
                               _mm.sin(a), _mm.cos(a) ]);
@@ -48,7 +48,7 @@ czmath.transform = {
   },
 
   rotate_y: function(a){
-    var mat4 = new czmath.matrix4();
+    var mat4 = new VR8.Matrix4();
 
     mat4.set_identity().
       touch([0,8,2,10],[_mm.cos(a),_mm.sin(a),
@@ -57,7 +57,7 @@ czmath.transform = {
   },
 
   rotate_z: function(a){
-    var mat4 = new czmath.matrix4();
+    var mat4 = new VR8.Matrix4();
 
     mat4.set_identity().
       touch([0,1,4,5],[_mm.cos(a),-_mm.sin(a),

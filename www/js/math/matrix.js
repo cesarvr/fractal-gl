@@ -8,9 +8,9 @@
  * */
 
 
-var czmath = czmath || {};
+var VR8 = VR8 || {};
 
-czmath.matrix4 = function(m){
+VR8.Matrix4 = function(m){
 
   var _m = typeof m === 'object'?new Float32Array(m):{};
   var zero = function(){
@@ -73,7 +73,7 @@ czmath.matrix4 = function(m){
 
     multiply: function(mat){
       if(typeof mat.m !== 'function')
-        throw 'czmath.matrix4 needed'; 
+        throw 'VR8.matrix4 needed'; 
 
       var m1 = mat.m();
       var result = new Float32Array(16);

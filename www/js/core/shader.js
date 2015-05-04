@@ -1,6 +1,7 @@
 VR8.Shader = function(){
   var gl = VR8.webGL; 
   this.program = null;
+  this.vars = {}; 
 
   this.add = function(shaderCode, type){
     var shader = null; 
@@ -17,6 +18,22 @@ VR8.Shader = function(){
     gl.compileShader(shader);
     return shader;
   }
+  
+  this.use = function(){
+    gl.useProgram(program);
+  }
+  
+  this.attribute = function(param){
+    this.vars[param] = gl.getAttribLocation(program, param);
+    gl.enableVertexAttribArray(this.vars[param]);
+    return this;
+  }
+  
+  this.uniform = function(param){
+    this.vars[param] = gl.getUniformLocation(program, param);
+    return this;
+  }
+
 
   this.link = function(vertex, fragment){
     program = gl.createProgram();
@@ -25,7 +42,7 @@ VR8.Shader = function(){
     gl.attachShader( program, this.add(fragment,'fragment'));
     gl.linkProgram( program ); 
     
-    if (!gl.getProgramParameter(program,, gl.LINK_STATUS)) {
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       throw 'error linking shaders';
     }
   }
@@ -36,7 +53,7 @@ VR8.Shader = function(){
 
 
 
-
+/*
 VR8.Shader = function(name_vertex, name_fragment){
   var gl = VR8.gl;
 
@@ -75,4 +92,4 @@ VR8.Shader = function(name_vertex, name_fragment){
           return sp;
  }(name_vertex, name_fragment);
 }
-
+*/

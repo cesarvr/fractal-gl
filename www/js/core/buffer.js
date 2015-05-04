@@ -6,14 +6,15 @@ VR8.Buffer = function(){
   this.size  = 0;
 
   this.geometry = function(g){
-    buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer); 
+    this.buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer); 
     gl.bufferData( 
                   gl.ARRAY_BUFFER,
                    new Float32Array(g.points),
-                   render_type
+                   this.render_type
                  );
     
-    size = g.size; 
+    this.size  = g.size; 
+    this.sides = g.points.length / g.size; 
   }
 }
