@@ -13,7 +13,7 @@ VR8.Core = function(canvas, fullscreen){
         _canvas.style.width = window.innerWidth + "px";
         _canvas.style.height = window.innerHeight + "px";
       }
-      debugger;
+
       VR8.W = _canvas.width;
       VR8.H = _canvas.height;
     
@@ -31,11 +31,10 @@ VR8.Scene2D = function(){
   var Width  = VR8.W; 
   var Height = VR8.H;
   var gl = VR8.webGL;
-  
-  this.setShader = function(){
-    
-  };  
-  
+  this.shader = {};
+  this.camera = {};
+
+
   this.clean = function(){
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
   }
@@ -43,19 +42,19 @@ VR8.Scene2D = function(){
   this.render = function(entity){
     gl.viewport(0, 0, Width, Height);
     
-    gl.clear(gl.COLOR_BUFFER_BIT); 
-    for(var i in entity.varsGL){
-      var v = entity.varsGL[i]; 
-      gl.uniformMatrix4fv(entity.shader.vars[i],false, v);
-    }
+    this.shader.prepare({'MV':this.camera, 'P':entity.model});
     
     gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer.buffer );
-    gl.vertexAttribPointer(entity.shader.vars.position, entity.buffer.size, gl.FLOAT, false, 0, 0);
+
+    entity.buffer.upload_vertex(this.shader.vars.position);
+    entity.buffer.upload_colors(this.shader.vars.colors);
+
       
-    if(!gl[entity.drawType])
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, entity.buffer.sides);
-    else
+    if(typeof gl[entity.drawType] === 'number')
       gl.drawArrays(gl[entity.drawType], 0, entity.buffer.sides);
+    else
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, entity.buffer.sides);
+      
   }
 }
 

@@ -9,6 +9,7 @@
 
 VR8.transform = {
   _mm: Math,
+
   ortho: function(left, right, 
                   bottom, top, 
                   nearz, farz  ){
@@ -37,6 +38,11 @@ VR8.transform = {
     var mat4 = new VR8.Matrix4().set_identity();
     return mat4.touch([12,13,14], [x,y,z]);
   },
+
+  translate_m: function(mat4, vec3){
+    return mat4.touch([12,13,14], vec3.v);
+  },
+  
 
   rotate_x: function(a){
     var mat4 = new VR8.Matrix4();

@@ -17,25 +17,36 @@
   <canvas id="canvas-surface" style="border: none;" class="canvasFullWindow"  width="1200" height="800"></canvas>
 </body>
 
-<script id="fragment-shader" type="fragment">
-    precision mediump float;
 
-    void main(void) {
-        gl_FragColor = vec4(0.4, 0.4, 0.4, 1.0);
-
-    }
-</script>
 
 <script id="vertex-shader" type="vertex">
     attribute vec3 position;
+    attribute vec4 colors;
 
     uniform mat4 MV;
     uniform mat4 P;
+    varying vec4 frag_color;
 
     void main(void) {
-      gl_Position =  MV * P * vec4(position, 1.0);
+      gl_Position = MV * P * vec4(position, 1.0);
+      frag_color = colors;
+      gl_PointSize = 4.0;
     }
 </script>
+
+
+<script id="fragment-shader" type="fragment">
+    precision mediump float;
+    varying vec4 frag_color;
+
+
+    void main(void) {
+        gl_FragColor = frag_color;
+
+    }
+</script>
+
+
 
   <script src="js/math/vector.js"></script>
   <script src="js/math/matrix.js"></script>
@@ -46,5 +57,5 @@
   <script src="js/core/buffer.js"></script>
   <script src="js/utils/util.js"></script>
   <script src="js/entity/point.js"></script>
-  <script src="demos/triangle.js"></script>
+  <script src="demos/dot_test.js"></script>
 </html>

@@ -39,6 +39,11 @@
     drawType: 'LINE_STRIP'
   }
 
+ 
+
+
+
+
   function render(){
     requestAnimFrame(render);
     scene.clean();

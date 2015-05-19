@@ -46,50 +46,15 @@ VR8.Shader = function(){
       throw 'error linking shaders';
     }
   }
-}
 
-
-
-
-
-
-/*
-VR8.Shader = function(name_vertex, name_fragment){
-  var gl = VR8.gl;
-
-  var load_shader = function(dom){
-    var shader;
-    if(dom.type ==='fragment') 
-     shader = gl.createShader(gl.FRAGMENT_SHADER);
-    else if(dom.type === 'vertex')
-     shader = gl.createShader(gl.VERTEX_SHADER);
-    
-    if(!shader) throw 'invalid shader code!!' + dom;
-   
-    gl.shaderSource(shader, dom.innerHTML);
-    gl.compileShader(shader);
-    
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw '['+ dom.type +']'+'compilation failed: ' +  gl.getShaderInfoLog(shader);
-      return null;
+  this.set 
+  this.prepare = function(varsGL){
+    for(var var_name in varsGL){
+      var value = varsGL[var_name]; 
+      gl.uniformMatrix4fv(this.vars[var_name], false, value);
     }
-    return shader;
- };
+  }
 
- return function(name_vertex, name_fragment){
-          var sp = gl.createProgram();
-          
-          var v = document.getElementById(name_vertex);
-          gl.attachShader( sp, load_shader(v) );
-          
-          var f = document.getElementById(name_fragment);
-          gl.attachShader( sp, load_shader(f) );
-          gl.linkProgram( sp ); 
-          
-          if (!gl.getProgramParameter(sp, gl.LINK_STATUS)) {
-            throw 'error linking shaders';
-          }
-          return sp;
- }(name_vertex, name_fragment);
+
+
 }
-*/
