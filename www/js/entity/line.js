@@ -1,6 +1,7 @@
-VR8.Point = function(colors){
+VR8.Line = function(point, colors){
 	var buffer = new VR8.Buffer();
-	var vertex = [   0.0,  0.0, 0.0, colors.r, colors.g, colors.b, colors.a ];
+	var vertex = [ point.x,  point.y, point.z, colors.r, colors.g, colors.b, colors.a ];
+
 	var transform = Object.create(VR8.transform);
 
     this.colors = new Vector(colors.r,colors.g,colors.b);

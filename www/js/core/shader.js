@@ -47,7 +47,6 @@ VR8.Shader = function(){
     }
   }
 
-  this.set 
   this.prepare = function(varsGL){
     for(var var_name in varsGL){
       var value = varsGL[var_name]; 

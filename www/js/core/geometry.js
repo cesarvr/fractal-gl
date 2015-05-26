@@ -1,0 +1,32 @@
+VR8.geometry = VR8.geometry || {}; 
+
+VR8.geometry.vec_maker  = function(vector){
+      var buff = new Float32Array(7);
+      if(typeof vector.pos !== 'undefined'){
+        buff.set(vector.pos.get(), 0);
+      }else
+          throw 'missing vector3 for position.';
+      
+      if(typeof vector.color !== 'undefined') { 
+        buff.set(vector.color.get(), 3); 
+      }else
+        buff.set([0.7,0.7,0.7,0.7], 3); //set to white as default.
+      return buff;
+}
+
+VR8.geometry.mesh = function(size){
+    var buffer = new Float32Array(size);
+    var counter = 0, step=7;
+    var len = 0;
+    var load = VR8.geometry.vec_maker; 
+    return {
+        buffer: function(){ return buffer.subarray(0, len); },
+        add:function(p){
+            len+=step;
+            if(counter+50 >= buffer.length) debugger;
+            buffer.set( load({pos:p}), counter );
+            counter+=step;
+        }
+    }
+};
+

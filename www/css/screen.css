@@ -1,0 +1,9 @@
+
+.canvas-display {
+  color: #111;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  height: 100%;
+  width: 100%;
+}
