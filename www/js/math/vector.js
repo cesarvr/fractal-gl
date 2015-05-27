@@ -58,6 +58,10 @@ var Vector = function(x,y,z){
     val[2] *= e;
     return this;
   }
+
+  this.multiplyByScalar = function(scalar){
+    return new Vector(val[0]*scalar, val[1]*scalar, val[2]*scalar); 
+  }
   
   this.cross = function(v){
     return new vtor(
@@ -74,7 +78,7 @@ var Vector = function(x,y,z){
 }
 
 VR8.Lerp = function(v0, v1, t){
-    v0.scalar_mul(1.0-t).add(v1.scalar_mul(t));   
+    v0.scalar_mul(1.0-t).add(v1.multiplyByScalar(t));   
 }
 
 

@@ -8,7 +8,10 @@ VR8.geometry.vec_maker  = function(vector){
           throw 'missing vector3 for position.';
       
       if(typeof vector.color !== 'undefined') { 
-        buff.set(vector.color.get(), 3); 
+        var c = new Float32Array(4);
+        c.set(vector.color.get());
+        c[3]= 0.7;
+        buff.set(c, 3); 
       }else
         buff.set([0.7,0.7,0.7,0.7], 3); //set to white as default.
       return buff;
@@ -21,10 +24,10 @@ VR8.geometry.mesh = function(size){
     var load = VR8.geometry.vec_maker; 
     return {
         buffer: function(){ return buffer.subarray(0, len); },
-        add:function(p){
+        add:function(p,c){
             len+=step;
             if(counter+50 >= buffer.length) debugger;
-            buffer.set( load({pos:p}), counter );
+            buffer.set( load({pos:p, color: c}), counter );
             counter+=step;
         }
     }

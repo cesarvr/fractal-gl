@@ -10,12 +10,12 @@ window.requestAnimFrame = (function(){
 function getMousePos(canvas, evt, viewport) {
 	var rect = canvas.getBoundingClientRect();
 	var x = evt.clientX - rect.left;
-  var y = evt.clientY - rect.top;
+    var y = evt.clientY - rect.top;
 
-  x = viewport.x * x / rect.right;
-   y = viewport.y * y / rect.bottom;
-  return {
-		x: x,
+    x = viewport.x * x / rect.right;
+    y = viewport.y * y / rect.bottom;
+    return {
+	    x: x,
 		y: y
 	};
 }
