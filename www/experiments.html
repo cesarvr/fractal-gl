@@ -4,25 +4,20 @@
   <style>
  
 
-
   
 .canvasFullWindow{
     position: absolute;
     background-color: #333;
     top: 0px;
     left: 0px;
+    height: 100%;
+    width: 100%;
 }
-  </style>
+  
+  </style>>
 <body>
-     <canvas id="canvas-surface" style="border: none;" class="canvasFullWindow"  width="1200" height="300">
-
-    <input id="test" type="type" style="position:absolute;left:100px;top:300px;width:600px"/>
-</canvas>
-
+  <canvas id="canvas-surface" style="border: none;" class="canvasFullWindow"></canvas>
 </body>
-
-
-
 <script id="vertex-shader" type="vertex">
     attribute vec3 position;
     attribute vec4 colors;
@@ -50,15 +45,16 @@
     }
 </script>
 
-
-
   <script src="js/math/vector.js"></script>
   <script src="js/math/matrix.js"></script>
   <script src="js/math/transform.js"></script>
   <script src="js/core/core.js"></script>
   <script src="js/core/shader.js"></script>
   <script src="js/core/buffer.js"></script>
+  <script src="js/core/geometry.js"></script>
   <script src="js/utils/util.js"></script>
   <script src="js/entity/point.js"></script>
-  <script src="demos/dot_test.js"></script>
+ 
+
+  <script src="demos/experiments.js"></script>
 </html>

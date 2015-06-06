@@ -1,89 +1,173 @@
-(function(){
-  var a = document.getElementById('canvas-surface');
-  var core   = new VR8.Core(a);
-  var buffer = new VR8.Buffer();
-  var shader = new VR8.Shader();
-  var mpos = {};
-  var points = []; 
-  var frag   = document.getElementById('fragment-shader').innerHTML;
-  var vert   = document.getElementById('vertex-shader').innerHTML;
-  var transform = Object.create(VR8.transform);
-  var camera    = transform.ortho(0,50,50,0,1,-1);
-  var scene     = new VR8.Scene2D();
-
-  shader.link(vert, frag);
-  
-  var init_shader = function(){
-    var p = shader.program;
-    shader.use();
-    
-    shader
-    .attribute('position')
-    .attribute('colors')
-    .uniform('MV')
-    .uniform('P');
+(function() {
+    var a = document.getElementById('canvas-surface');
+    var core = new VR8.Core(a, true);
+    var buffer = new VR8.Buffer();
+    var shader = new VR8.Shader();
+    var frag = document.getElementById('fragment-shader').innerHTML;
+    var vert = document.getElementById('vertex-shader').innerHTML;
+    var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
+    var scene = new VR8.Scene2D();
+    var pos = {
+        x: 0,
+        y: 0
+    };
+    var mov = {
+        x: 0,
+        y: 0
+    };
+    var zoomOut = false;
 
 
-    scene.shader = shader;
-    scene.camera = camera;
-  }();
+    a.addEventListener('click', function() {
+        zoomOut = true;
+    });
 
-  var entity = {
-    buffer: buffer,
-    model: transform.translate(25,25,0).m(),
-    drawType: 'TRIANGLE_STRIP'
-  }
+    shader.link(vert, frag);
 
-  var light = new Vector(25, 25, 0.0);
-  a.addEventListener('click', function(evt){
-    mpos = getMousePos(a, evt, {x:50, y:50});
-  },false);
+    var init_shader = function() {
+        var p = shader.program;
+        shader.use();
+
+        shader
+            .attribute('position')
+            .attribute('colors')
+            .uniform('MV')
+            .uniform('P');
+
+        scene.shader = shader;
+        scene.camera = camera;
+    }();
+
+    var Point = function(v) {
+        var buffer = new VR8.Buffer();
+        var t = new VR8.Transform();
+        var position;
+        var entity = {
+            buffer: buffer,
+            model: t.m,
+            drawType: 'POINTS'
+        };
+        buffer.no_color_data = false;
+
+        var vertex = new Float32Array([0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0]);
+        buffer.geometry({
+            points: vertex,
+            size: 7
+        });
+
+        if (v) {
+            t.translate(v.v[0], v.v[1], v.v[2]);
+            pos = v;
+        }
+
+        return {
+            setColor: function(v) {
+                vertex[3] = v[0];
+                vertex[4] = v[1];
+                vertex[5] = v[2];
+            },
+
+            getBuffer: function() {
+                return buffer
+            },
+            setPos: function(v) {
+                t.translate(v.v[0], v.v[1], v.v[2]);
+            },
+
+            getPos: function() {
+                return v;
+            },
+
+            getEntity: function() {
+                return entity;
+            }
+        }
+    };
 
 
-  function init(){
-    for(var i =0; i<=900; i++){
-      var p = new VR8.Point({r:0.5, g:0.5, b:0.5, a:1.0});
-      p.position(randomN(50),randomN(50),0);
-      points.push(p);
+    var ucirclePlot = function(m) {
+        var x =20;
+        var y = 20;
+
+        var plot = [];
+        for (var i = 0; i < 14; i += 0.01) {
+            plot.push(new Vector(x + Math.cos(i)*m ,  y+Math.sin(i)*m ));
+        }
+        return plot;
+
     }
-  }
 
 
 
-  
-   var t = 0.001; 
+    var tanPlot = function(m) {
+        var x = 0;
+        var y = 20;
 
-  function update(){
+        var plot = [];
+        for (var i = 0; i < 100; i += 0.1) {
+            plot.push(new Vector(x + i, y + Math.tan(i) * m));
+        }
+        return plot;
 
-    points.forEach(function(p){
-       if(t>1.0) t=0.001;
-       p.update();
-       //p.position(mpos.x,mpos.y, 0);
+    }
 
-       
-       //var ptmp = p.pos.normalize();
-       //var ltmp = light.normalize();
-       //console.log(ptmp.dot(ltmp));
-       //if(ltmp.dot(ptmp) < 1) debugger;
+    var sinPlot = function(m) {
+        var x = 0;
+        var y = 20;
 
-    if(mpos.x && mpos.y && p.pos)
-      VR8.Lerp(p.pos, new Vector(mpos.x, mpos.y, 0.0), t);
-    
-    });
-    t+=0.00001;
-  }
-  
-  function render(){
-    update();
+        var plot = [];
+        for (var i = 0; i < 100; i += 0.1) {
+            plot.push(new Vector(x + i, y + Math.sin(i) * m));
+        }
+        return plot;
+    };
 
-    requestAnimFrame(render);
-    scene.clean();
-    points.forEach(function(p){
-      scene.render(p.get_entity());
-    });
-  }
 
-  init();
-  render();
+    var plotter = function() {
+        var points = [];
+
+        return function(fn) {
+            if (points.length === 0) {
+                fn.forEach(function(vec) {
+                    points.push(new Point(vec))
+                });
+            }
+            return points;
+        }
+    }();
+
+    //triangle.cord({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 9);
+
+    a = new Vector(15, 15, 0.0);
+    b = new Vector(20, 15, 0.0);
+    c = new Vector(20, 20, 0.0);
+
+    var pointA = new Point(a);
+    var pointB = new Point(b);
+    var pointC = new Point(c);
+
+
+    function init() {}
+    var p = {
+        x: 0,
+        y: 0
+    };
+
+    function update() {
+
+    }
+
+    function render() {
+        update();
+
+        requestAnimFrame(render);
+        scene.clean();
+        plotter(tanPlot(0.5)).forEach(function(p) {
+            scene.render(p.getEntity());
+        });
+    }
+
+    init();
+    render();
 
 }());

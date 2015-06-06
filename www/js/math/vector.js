@@ -75,7 +75,15 @@ var Vector = function(x,y,z){
    // this = cross(v);
   }
 
+  this.project = function(b){
+    var ab = this.dot(b);
+    var proj  = ab/b.magnitude();
+    var vnorm = b.normalize();
+    return  vnorm.multiplyByScalar(proj);
+  }
+
 }
+
 
 VR8.Lerp = function(v0, v1, t){
     v0.scalar_mul(1.0-t).add(v1.multiplyByScalar(t));   
