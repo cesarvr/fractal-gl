@@ -84,21 +84,6 @@
         }
     };
 
-
-    var ucirclePlot = function(m) {
-        var x =20;
-        var y = 20;
-
-        var plot = [];
-        for (var i = 0; i < 14; i += 0.01) {
-            plot.push(new Vector(x + Math.cos(i)*m ,  y+Math.sin(i)*m ));
-        }
-        return plot;
-
-    }
-
-
-
     var tanPlot = function(m) {
         var x = 0;
         var y = 20;
@@ -108,8 +93,23 @@
             plot.push(new Vector(x + i, y + Math.tan(i) * m));
         }
         return plot;
-
     }
+
+    var circleEquationPlot = function(m) {
+        var x = 0;
+        var y = 0;
+
+        var plot = [];
+        for (var i = 0; i < 3; i += 0.01) {
+            y += 1 - i;
+            x += i;
+            plot.push(new Vector((x + Math.abs(i)) + 1, y + i * i - 2));
+        }
+        return plot;
+    }
+
+
+
 
     var sinPlot = function(m) {
         var x = 0;
@@ -121,7 +121,6 @@
         }
         return plot;
     };
-
 
     var plotter = function() {
         var points = [];
@@ -145,7 +144,7 @@
     var pointA = new Point(a);
     var pointB = new Point(b);
     var pointC = new Point(c);
-
+    var plot = plotter(circleEquationPlot(0.5));
 
     function init() {}
     var p = {
@@ -162,7 +161,7 @@
 
         requestAnimFrame(render);
         scene.clean();
-        plotter(tanPlot(0.5)).forEach(function(p) {
+        plot.forEach(function(p) {
             scene.render(p.getEntity());
         });
     }
