@@ -1,7 +1,7 @@
 (function() {
 
     var a = document.getElementById('canvas-surface');
-    var core = new VR8.Core(a, true);
+    var core = new VR8.Core(true);
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var frag = document.getElementById('fragment-shader').innerHTML;
@@ -183,9 +183,6 @@
     snow_flake(p1.v, p3.v, 3);
     snow_flake(p3.v, p2.v, 3);
 
-    var vertex = new Float32Array([0.0, 0.0, 0.0, 1.0, 0.5, 0.3, 1.0,
-        10.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0
-    ]);
     buffer.geometry({
         points: msh.array,
         size: 7

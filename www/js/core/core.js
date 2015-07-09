@@ -1,13 +1,23 @@
 var VR8 = VR8 || {};
 
-VR8.Core = function(canvas, fullscreen) {
+VR8.Core = function(fullscreen) {
+    var _createCanvas = function() {
+        _canvas = document.createElement('canvas');
+        _canvas.setAttribute('width', 800);
+        _canvas.setAttribute('height', 600);
+        _canvas.setAttribute('style', 'position:absolute; left:0px; top:0px; border-style:none; background-color:#455A64'); 
+        
+        return _canvas;
+    }
+
 
     var init = function() {
-        var _canvas = canvas,
-            gl;
+        var _canvas = _createCanvas();
+        document.body.appendChild(_canvas);
 
         try {
-            gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+            var gl = _canvas.getContext("webgl") || _canvas.getContext("experimental-webgl");
 
             if (!gl) {
                 console.log('Error no webGL context found.');
@@ -15,7 +25,6 @@ VR8.Core = function(canvas, fullscreen) {
             }
 
 
-            VR8.webGL = gl;
             if (fullscreen) {
                 _canvas.style.width = window.innerWidth + "px";
                 _canvas.style.height = window.innerHeight + "px";
@@ -29,8 +38,11 @@ VR8.Core = function(canvas, fullscreen) {
             console.log(e);
         }
 
-        if (!gl)
+        if (!gl){
             console.log('can init WebGL :[');
+        }else{
+            VR8.webGL = gl;
+        }
     }();
 }
 

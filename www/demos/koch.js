@@ -1,7 +1,6 @@
 (function() {
 
-    var a = document.getElementById('canvas-surface');
-    var core = new VR8.Core(a, true);
+    var core = new VR8.Core(true);
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var frag = document.getElementById('fragment-shader').innerHTML;
@@ -213,7 +212,5 @@
         scene.clean();
         scene.render(entity);
     }
-
-    //init();
-    render();
+        render();
 }());

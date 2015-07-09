@@ -1,6 +1,5 @@
 (function(){
-  var a = document.getElementById('canvas-surface');
-  var core   = new VR8.Core(a, true);
+  var core   = new VR8.Core(true);
   var buffer = new VR8.Buffer();
   var shader = new VR8.Shader();
   var frag   = document.getElementById('fragment-shader').innerHTML;
@@ -11,29 +10,6 @@
   var mov = {x:0, y:0}; 
   var zoomOut = false; 
  
-
-  a.addEventListener('click', function(){ zoomOut = true;});
-
-  a.addEventListener('mousemove', function(evt) {
-   var tmp =  getMousePos(a,evt,{x: VR8.W, y:VR8.H} );
-   console.log(pos);
-   
-   if(tmp){
-   
-    if(tmp.x > pos.x)
-        mov.x=-0.03;
-    else 
-        mov.x=0.03;
-   
-    if(tmp.y > pos.y)
-        mov.y=-0.03;
-    else
-        mov.y=0.03;
-   }
-
-    pos = tmp;
-        
-  });
 
   shader.link(vert, frag);
   
