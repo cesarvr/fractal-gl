@@ -172,9 +172,9 @@
 
 
 
-    snow_flake(p2.v, p1.v, 4);
-    snow_flake(p1.v, p3.v, 4);
-    snow_flake(p3.v, p2.v, 4);
+    snow_flake(p2.v, p1.v, 2);
+    snow_flake(p1.v, p3.v, 2);
+    snow_flake(p3.v, p2.v, 2);
     
     var vertex = new Float32Array([0.0, 0.0, 0.0, 1.0, 0.5, 0.3, 1.0,
         10.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0

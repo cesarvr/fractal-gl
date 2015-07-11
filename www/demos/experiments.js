@@ -179,9 +179,9 @@
 
 
 
-    snow_flake(p2.v, p1.v, 3);
-    snow_flake(p1.v, p3.v, 3);
-    snow_flake(p3.v, p2.v, 3);
+    snow_flake(p2.v, p1.v, 2);
+    snow_flake(p1.v, p3.v, 2);
+    snow_flake(p3.v, p2.v, 2);
 
     buffer.geometry({
         points: msh.array,

@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <title>fractals</title>
+  <head>
+      <title>fractals</title>
+  </head>
+
+
 <body>
 </body>
+
+
 <script id="vertex-shader" type="vertex">
     attribute vec3 position;
     attribute vec4 colors;
@@ -14,6 +20,7 @@
     void main(void) {
       gl_Position = MV * P * vec4(position, 1.0);
       frag_color = colors;
+      gl_PointSize = 4.0;
     }
 </script>
 
@@ -40,5 +47,5 @@
   <script src="js/entity/point.js"></script>
  
 
-  <script src="demos/experiments.js"></script>
+  <script src="demos/debug.js"></script>
 </html>

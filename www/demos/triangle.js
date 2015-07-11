@@ -27,7 +27,7 @@
     scene.camera = camera;
   }();
   
-  var line_triangle = VR8.geometry.mesh(20000000);
+  var line_triangle = VR8.geometry.mesh(160);
 
   var triangle = function(){
     var buffer = new VR8.Buffer();
@@ -79,7 +79,8 @@ var sierpinski = function(p1, p2, p3, limit){
         }
   };
   
-  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 9);
+  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 0);
+  
   var t = new VR8.Transform(); 
   t.translate(25,25).scale(1,1,0);
   var entity = {
@@ -114,7 +115,7 @@ var sierpinski = function(p1, p2, p3, limit){
   }
   
   function render(){
-    update();
+    //update();
 
     requestAnimFrame(render);
     scene.clean();

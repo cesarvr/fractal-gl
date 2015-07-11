@@ -26,7 +26,6 @@ VR8.geometry.mesh = function(size){
         buffer: function(){ return buffer.subarray(0, len); },
         add:function(p,c){
             len+=step;
-            if(counter+50 >= buffer.length) debugger;
             buffer.set( load({pos:p, color: c}), counter );
             counter+=step;
         }
