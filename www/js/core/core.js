@@ -54,7 +54,6 @@ VR8.Scene2D = function() {
     this.shader = {};
     this.camera = {};
 
-    gl.viewport(0, 0, Width, Height);
 
     /* this method can be override for custom functionality. */
 
@@ -63,13 +62,14 @@ VR8.Scene2D = function() {
     }
 
     this.prepare = function(entity) {
+        gl.viewport(0, 0, Width, Height);
         this.shader.prepare({
             'MV': this.camera,
             'P': entity.model
         });
 
         gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer.buffer);
-
+        
         entity.buffer.upload_vertex(this.shader.vars.position);
         entity.buffer.upload_colors(this.shader.vars.colors);
     }
