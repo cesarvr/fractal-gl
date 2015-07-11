@@ -4,30 +4,12 @@
     var core = new VR8.Core(true);
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
-    var frag = document.getElementById('fragment-shader').innerHTML;
-    var vert = document.getElementById('vertex-shader').innerHTML;
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
     var scene = new VR8.Scene2D();
 
-    var init_shader = function() {
-
-        shader.link(vert, frag);
-        shader.use();
-
-        shader
-            .attribute('position')
-            .attribute('colors')
-            .uniform('MV')
-            .uniform('P');
-
+        shader.create(VR8.Stock2D);
         scene.shader = shader;
         scene.camera = camera;
-    }();
-
-    var line = function() {
-        var vec = null;
-
-    }
 
     var v3 = function() {};
     var deg_rad = function(angle) {
@@ -70,49 +52,39 @@
         var n = this.len(v);
         return new Float32Array([v[0] / n, v[1] / n, v[2] / n]);
     }
-
-
-    var _msh = function() {
-        this.array = null;
-        this.copy = function(v, c) {
-            var tmp = this.array;
-            this.array = new Float32Array(tmp.length + v.length + c.length);
-            this.array.set(tmp, 0);
-            this.array.set(v, tmp.length);
-            this.array.set(c, tmp.length + v.length);
+    
+    var avertex = [];
+    var mset = function(pos , color){
+        for(var p in pos){
+            avertex.push(pos[p]);
         }
-
-        this.set = function(pos, color) {
-            var v = new Float32Array(pos.length + color.length);
-            v.set(pos, 0);
-            v.set(color, pos.length);
-            if (!this.array)
-                this.array = v;
-            else {
-                this.copy(pos, color);
-            }
+        for(var c in color){
+            avertex.push(color[c]);
         }
-    };
+    }
 
-    var msh = new _msh();
+
+
+
     var rgbc = function(r, g, b) {
         var v =  new Float32Array([r, g, b]);
         v = v3.div_scalar(v, 250);
         return new Vector4(v[0], v[1], v[2], 1.0);
     }
+    
     var point = function(p1, p2, n) {
         var c = {};
 
         c.red = new Vector4(1, 0.5, 0.0, 1.0);
         c.blue = new Vector4(0.2, 0.2, 1, 1.0);
-        c.white = new Vector4(0.6, 0.6, 1, 1.0);
+        c.white = new Vector4(0.12, 0.12, 0.12, 1.0);
         c.green = new Vector4(0.2, 1, 0.2, 1.0);
         c.tron = rgbc(210, 234, 252);
 
         var color = c[n] || c.white;
 
-        msh.set(p1, color.v);
-        msh.set(p2, color.v);
+        mset(p1, color.v);
+        mset(p2, color.v);
     }
 
     var snow_flake = function(p1, p2, limit) {
@@ -162,41 +134,30 @@
     }
 
 
-
-
-
     var p1 = new Vector(10, 0.0, 0.0);
     var p2 = new Vector(0.0, 30.0, 0.0);
     var p3 = new Vector(20.0, 30.0, 0.0);
 
     var color = new Vector4(0.3, 1.0, 0.3, 1.0);
-    var msh = new _msh();
 
-    point(p1.v, p2.v, 'green');
+    point(p1.v, p2.v, 'white');
+    point(p1.v, p3.v, 'white');
+    point(p2.v, p3.v, 'white');
 
-    point(p1.v, p3.v, 'green');
-    point(p2.v, p3.v, 'green');
-
-
-
-    snow_flake(p2.v, p1.v, 2);
-    snow_flake(p1.v, p3.v, 2);
-    snow_flake(p3.v, p2.v, 2);
+    snow_flake(p2.v, p1.v, 4);
+    snow_flake(p1.v, p3.v, 4);
+    snow_flake(p3.v, p2.v, 4);
 
     buffer.geometry({
-        points: msh.array,
+        points: avertex,
         size: 7
     });
-
-
 
 
     buffer.no_color_data = false;
 
     var t = new VR8.Transform();
-    t.translate(15, 8).scale(1, 1, 0);
-
-
+    t.translate(15, 8,0).scale(1, 1, 0);
 
 
     var entity = {
@@ -205,18 +166,12 @@
         drawType: 'LINES'
     }
 
-    function update() {
-        return null;
-    }
-
     function render() {
-        update();
 
         requestAnimFrame(render);
         scene.clean();
         scene.render(entity);
     }
 
-    //init();
     render();
 }());

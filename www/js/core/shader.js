@@ -12,7 +12,10 @@ VR8.Shader = function() {
         if (type === 'vertex')
             shader = gl.createShader(gl.VERTEX_SHADER);
 
-        if (!shader) throw 'invalid shader code!!' + dom;
+        if (!shader) {
+            throw 'invalid shader code!!';
+            console.log('invalid shader code' + shaderCode);
+        }
 
         gl.shaderSource(shader, shaderCode);
         gl.compileShader(shader);
@@ -34,6 +37,12 @@ VR8.Shader = function() {
         return this;
     }
 
+    this.create = function(code) {
+        if (code && code.vertex && code.fragment) {
+            this.link(code.vertex, code.fragment);
+            code.init(this);
+        }
+    }
 
     this.link = function(vertex, fragment) {
         this.program = gl.createProgram();
@@ -47,6 +56,9 @@ VR8.Shader = function() {
             throw 'error linking shaders';
         }
     }
+
+
+
 
     this.prepare = function(varsGL) {
         for (var var_name in varsGL) {

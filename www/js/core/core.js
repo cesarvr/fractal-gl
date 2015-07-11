@@ -27,7 +27,7 @@ VR8.Core = function(fullscreen) {
 
             VR8.webGL = gl;
             
-            if (!fullscreen) {
+            if (fullscreen) {
                 _canvas.style.width = window.innerWidth + "px";
                 _canvas.style.height = window.innerHeight + "px";
                 _canvas.width = window.innerWidth;
