@@ -32,7 +32,6 @@ VR8.geometry.mesh = function(size){
     }
 };
 
-
 VR8.geometry.shape = function(position, color){
     var vec = new Float32Array(7);
     vec.set(position.v,0);

@@ -23,7 +23,7 @@ var Vector = function(x, y, z) {
         val[2] = n;
         return this;
     };
-    
+
     this.getX = function() {
         return val[0];
     };
@@ -35,8 +35,6 @@ var Vector = function(x, y, z) {
     this.getZ = function() {
         return val[2];
     };
-
-
 
     this.set = function(x, y, z) {
         val[0] = x;
@@ -115,11 +113,63 @@ var Vector = function(x, y, z) {
 
 }
 
-var Vector4 = function(x,y,z,w){ 
-    this.v = new Float32Array([x,y,z,w]);
+var Vector4 = function(x, y, z, w) {
+    this.v = new Float32Array([x, y, z, w]);
 }
 
 
 VR8.Lerp = function(v0, v1, t) {
     v0.scalar_mul(1.0 - t).add(v1.multiplyByScalar(t));
 }
+
+
+
+
+var v3 = function() {};
+
+v3.deg_rad = function(angle) {
+    return angle * Math.PI / 180;
+};
+
+v3.add_scalar = function(v, scalar) {
+    return new Float32Array([v[0] + scalar, v[1] + scalar, v[2] + scalar]);
+};
+
+v3.sub_scalar = function(v, scalar) {
+    return new Float32Array([v[0] - scalar, v[1] - scalar, v[2] - scalar]);
+};
+
+v3.mul_scalar = function(v, scalar) {
+    return new Float32Array([v[0] * scalar, v[1] * scalar, v[2] * scalar]);
+};
+
+v3.div_scalar = function(v, scalar) {
+    return new Float32Array([v[0] / scalar, v[1] / scalar, v[2] / scalar]);
+};
+
+v3.add = function(v1, v2) {
+    return new Float32Array([v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]]);
+};
+
+v3.sub = function(v1, v2) {
+    return new Float32Array([v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]]);
+};
+
+v3.mul = function(v1, v2) {
+    return new Float32Array([v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]]);
+};
+
+v3.len = function(v) {
+    return Math.sqrt(((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
+};
+
+v3.normalize = function(v) {
+    var n = this.len(v);
+    return new Float32Array([v[0] / n, v[1] / n, v[2] / n]);
+};
+
+v3.lerp = function(v1, v2,t){
+    //v0.alar_mul(1.0 - t).add(v1.multiplyByScalar(t));
+    return v3.add( v3.mul_scalar(v1, 1.0 - t), v3.mul_scalar(v2, t) ); 
+}; 
+

@@ -7,52 +7,14 @@
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
     var scene = new VR8.Scene2D();
 
-        shader.create(VR8.Stock2D);
-        scene.shader = shader;
-        scene.camera = camera;
+    shader.create(VR8.Stock2D);
+    scene.shader = shader;
+    scene.camera = camera;
 
-    var v3 = function() {};
     var deg_rad = function(angle) {
         return angle * Math.PI / 180;
     };
-
-    v3.add_scalar = function(v, scalar) {
-        return new Float32Array([v[0] + scalar, v[1] + scalar, v[2] + scalar]);
-    }
-
-    v3.sub_scalar = function(v, scalar) {
-        return new Float32Array([v[0] - scalar, v[1] - scalar, v[2] - scalar]);
-    }
-
-    v3.mul_scalar = function(v, scalar) {
-        return new Float32Array([v[0] * scalar, v[1] * scalar, v[2] * scalar]);
-    }
-
-    v3.div_scalar = function(v, scalar) {
-        return new Float32Array([v[0] / scalar, v[1] / scalar, v[2] / scalar]);
-    }
-
-    v3.add = function(v1, v2) {
-        return new Float32Array([v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]]);
-    }
-
-    v3.sub = function(v1, v2) {
-        return new Float32Array([v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]]);
-    }
-
-    v3.mul = function(v1, v2) {
-        return new Float32Array([v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]]);
-    }
-
-    v3.len = function(v) {
-        return Math.sqrt(((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
-    }
-
-    v3.normalize = function(v) {
-        var n = this.len(v);
-        return new Float32Array([v[0] / n, v[1] / n, v[2] / n]);
-    }
-    
+        
     var avertex = [];
     var mset = function(pos , color){
         for(var p in pos){
@@ -62,9 +24,6 @@
             avertex.push(color[c]);
         }
     }
-
-
-
 
     var rgbc = function(r, g, b) {
         var v =  new Float32Array([r, g, b]);
@@ -88,7 +47,6 @@
     }
 
     var snow_flake = function(p1, p2, limit) {
-
         var line = v3.sub(p2, p1);
         var len = v3.len(line);
         var seg = len / 3;
@@ -145,19 +103,17 @@
             console.log(p.v);
             debugger;
             if(tmp){
-                point(tmp.v, p.v, 'white');
+                point(tmp.v, p.v, 'tron');
                 if(r)
-                snow_flake(p.v, tmp.v, 3);
+                snow_flake(p.v, tmp.v, 5);
                 else    
-                snow_flake(tmp.v, p.v, 3);
+                snow_flake(tmp.v, p.v, 5);
             }
             tmp = p;
         }
     }
     
-
-    
-    poly(6, false);
+    poly(4, true);
     buffer.geometry({
         points: avertex,
         size: 7

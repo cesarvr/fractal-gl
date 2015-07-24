@@ -1,24 +1,27 @@
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-serve');
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
     grunt.initConfig({
+        
         compass: {
-            dev: { 
+            dev: {
                 options: {
                     sassDir: 'www/sass',
                     cssDir: 'www/stylesheets'
                 }
             }
         },
-        serve: {
-            options: {
-                port: 9000,
-                'serve': {
-                    'path': '.'
+
+        connect: {
+            server: {
+                options: {
+                    livereload: true,
+                    base: '.',
+                    port: 9000
                 }
             }
         },
@@ -51,5 +54,5 @@ module.exports = function(grunt) {
     });
 
 
-    grunt.registerTask('default', ['serve', 'watch']);
+    grunt.registerTask('serve', ['connect:server','watch']);
 };
