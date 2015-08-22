@@ -99,9 +99,8 @@
         var tmp = null;
         var s = sides || 5;
         for( var x=0; x<=(2*PI); x+=((2*PI)/sides) ){
-            var p = new Vector(10 * cos(x), 20 * sin(x), 0.0 );
+            var p = new Vector([ 10 * cos(x), 20 * sin(x), 0.0 ]);
             console.log(p.v);
-            debugger;
             if(tmp){
                 point(tmp.v, p.v, 'tron');
                 if(r)
@@ -113,7 +112,7 @@
         }
     }
     
-    poly(4, true);
+    poly(7, false);
     buffer.geometry({
         points: avertex,
         size: 7
@@ -121,7 +120,7 @@
 
 
     buffer.no_color_data = false;
-
+    
     var t = new VR8.Transform();
     t.translate(25, 25,0).scale(1, 1, 0);
 

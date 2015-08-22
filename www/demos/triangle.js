@@ -79,7 +79,7 @@ var sierpinski = function(p1, p2, p3, limit){
         }
   };
   
-  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 0);
+  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 3);
   
   var t = new VR8.Transform(); 
   t.translate(25,25).scale(1,1,0);

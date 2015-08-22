@@ -15,20 +15,85 @@
         return angle * Math.PI / 180;
     };
 
-    var avertex = [];
-    var mset = function(pos, color) {
-        for (var p in pos) {
-            avertex.push(pos[p]);
-        }
-        for (var c in color) {
-            avertex.push(color[c]);
+
+    var Vertex = function() {}
+
+    var decorate = function(obj) {
+
+        var proto = obj.prototype;
+
+        for (var keys in this) {
+            proto[keys] = this[keys];
         }
     }
+
+    var VertexBuffer = {
+
+        vertexArray: [],
+
+        save: function(pos, color) {
+            for (var p in pos) {
+                this.vertexArray.push(pos[p]);
+            }
+            for (var c in color) {
+                this.vertexArray.push(color[c]);
+            }
+            this.vertexArray.push(1.0); // alpha for color;
+
+            return this;
+        },
+
+        clear: function(){
+            this.vertexArray = [];
+        },
+
+        decorate: decorate
+    };
+
+
+    var Morph = {
+        morphing: [],
+
+        savePoints: function(p1, p2, color) {
+
+            this.morphing.push({
+                pointA: new Vector(p1),
+                pointB: new Vector(p2),
+                color: rgbc(210, 234, 252)
+            });
+
+            return this;
+        },
+
+        step: function(delta) {
+
+            var self = this;
+            
+            self.clear(); 
+
+            this.morphing.forEach(function(seg) {
+                var p1 = seg.pointA.v;
+                var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
+                var color = VR8.Lerp(seg.color.copy(), rgbc(245, 124, 0), delta).v;
+
+                self.save(p1, seg.color.v);
+                self.save(p2, color);
+            });
+            return this;
+        },
+
+        decorate: decorate
+    }
+
+    VertexBuffer.decorate(Vertex);
+    Morph.decorate(Vertex);
+
+    var vert = new Vertex();
 
     var rgbc = function(r, g, b) {
         var v = new Float32Array([r, g, b]);
         v = v3.div_scalar(v, 250);
-        return new Vector4(v[0], v[1], v[2], 1.0);
+        return new Vector(v);
     }
 
     var point = function(p1, p2, n) {
@@ -42,39 +107,7 @@
 
         var color = c[n] || c.white;
 
-        mset(p1, color.v);
-        mset(p2, color.v);
-    }
-
-
-    var spoint = function() {
-        var c = {};
-        var buff = [];
-
-
-        this.add_path = function(p1, p2) {
-
-            c.red = new Vector4(1, 0.5, 0.0, 1.0);
-            c.blue = new Vector4(0.2, 0.2, 1, 1.0);
-            c.white = new Vector4(0.22, 0.22, 0.22, 1.0);
-            c.green = new Vector4(0.2, 1, 0.2, 1.0);
-            c.tron = rgbc(210, 234, 252);
-
-            var color = c[n] || c.white;
-
-            buff.push({
-                ini: p1,
-                end: p2
-            });
-        }
-
-        this.goto_path = function(dx) {
-            buff.forEach(function(v) {
-                var ve = v3.lerp(v.ini, v.end, dx);
-                console.log(ve);
-            });
-        }
-
+        vert.savePoints(p1, p2);
     }
 
 
@@ -123,42 +156,41 @@
         }
     }
 
-    var pt = spoint();
-
-
-    function poly(sides, r) {
-        var cos = Math.cos;
+    function poly(sides, r){
+        var cos = Math.cos; 
         var sin = Math.sin;
         var PI = Math.PI;
         var tmp = null;
         var s = sides || 5;
-        for (var x = 0; x <= (2 * PI); x += ((2 * PI) / sides)) {
-            var p = new Vector(10 * cos(x), 20 * sin(x), 0.0);
+        for( var x=0; x<=(2*PI); x+=((2*PI)/sides) ){
+            var p = new Vector([15 * cos(x), 20 * sin(x), 0.0] );
             console.log(p.v);
-            if (tmp) {
+            if(tmp){
                 point(tmp.v, p.v, 'tron');
-                pt.add_path(tmp.v, p.v);
-                if (r)
-                    snow_flake(p.v, tmp.v, 0);
-                else
-                    snow_flake(tmp.v, p.v, 0);
+                if(r)
+                snow_flake(p.v, tmp.v, 3);
+                else    
+                snow_flake(tmp.v, p.v, 3);
             }
             tmp = p;
         }
     }
+ 
 
-    poly(2, false);
+
+
+    poly(3, false);
+
+
     buffer.geometry({
-        points: avertex,
+        points: vert.step(0.2).vertexArray,
         size: 7
     });
-
 
     buffer.no_color_data = false;
 
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
-
 
     var entity = {
         buffer: buffer,
@@ -166,7 +198,40 @@
         drawType: 'LINES'
     }
 
+    var sin = Math.sin;
+    var stp = 0.01;
+    var anim = 0;
+    var entity = {};
     function render() {
+
+        var ms = 17;
+        var step = (1 / 60) * 1000;
+        var dt = ((ms / step) | 0) * step;
+
+        if (anim < 1.0) {
+            anim += stp;
+
+            console.log('->', anim);
+
+            buffer.geometry({
+                points: vert.step(anim).vertexArray,
+                size: 7
+            });
+            entity = {
+                buffer: buffer,
+                model: t.m,
+                drawType: 'LINES'
+            }
+
+
+
+        }
+
+
+
+
+
+
 
         requestAnimFrame(render);
         scene.clean();
