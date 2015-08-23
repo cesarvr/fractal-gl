@@ -4,6 +4,8 @@ var Vector = function(opt) {
     var val
     if (opt instanceof Array || opt instanceof Float32Array) {
         val = opt;
+    }else if(opt instanceof Vector){
+       val = opt.v;
     } else {
         val = new Float32Array([opt.x, opt.y, opt.z]);
     }

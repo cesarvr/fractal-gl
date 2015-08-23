@@ -59,7 +59,7 @@
             this.morphing.push({
                 pointA: new Vector(p1),
                 pointB: new Vector(p2),
-                color: rgbc(25, 245, 245)
+                color: rgbc(24, 24, 24)
             });
 
             return this;
@@ -74,7 +74,7 @@
             this.morphing.forEach(function(seg) {
                 var p1 = seg.pointA.v;
                 var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
-                var color = VR8.Lerp(seg.color.copy(), rgbc(45, 124, 123), delta).v;
+                var color = VR8.Lerp(seg.color.copy(), rgbc(245, 124, 0), delta).v;
 
                 self.save(p1, seg.color.v);
                 self.save(p2, color);
@@ -111,55 +111,75 @@
     }
 
 
-var adapt = function(p){
-    return new Vector([p.x, p.y, 0.0]);
-}
+    var snow_flake = function(p1, p2, limit) {
+        var line = v3.sub(p2, p1);
+        var len = v3.len(line);
+        var seg = len / 3;
+        var norm = v3.normalize(line);
+        var angle = Math.atan2(line[1], line[0]);
+        var cos = Math.cos,
+            sin = Math.sin;
 
-var triangle = function(p1, p2, p3){
-    
-    var v1 = adapt(p1);
-    var v2 = adapt(p2);
-    var v3 = adapt(p3);
+        var vvr = []
 
-    point(v1,v2, 'tron');
-    point(v2,v3, 'tron');
-    point(v3,v1, 'tron');
+        var ratio = v3.div_scalar(line, 3);
 
-}
+        /*
+         *
+         *                    pb
+         *                    /\
+         *                   /  \
+         *                  /    \
+         *      p1 ------ pa      pc ------- p2
+         *
+         *
+         *
+         * */
 
-var sierpinski = function(p1, p2, p3, limit){
-        if(limit >0){
-          var pa = {
-            x: (p1.x + p2.x)/2,
-            y: (p1.y + p2.y)/2
-          }
-          
-          var pb = {
-            x: (p2.x + p3.x)/2,
-            y: (p2.y + p3.y)/2
-          }
+        var pa = v3.add(p1, ratio);
+        var pc = v3.sub(p2, ratio);
+        var pb = v3.add(pa,
+            v3.mul_scalar([cos(angle - Math.PI / 3), sin(angle - Math.PI / 3), 0], seg));
 
-          var pc = {
-            x: (p3.x + p1.x)/2,
-            y: (p3.y + p1.y)/2
-          }
 
-          sierpinski(p1,pa,pc, limit-1);
-          sierpinski(pa,p2,pb, limit-1);
-          sierpinski(pc,pb,p3, limit-1);
-        }else{
-          triangle(p1,p2,p3);
+        if (limit > 0) {
+            snow_flake(p1, pa, limit - 1);
+            snow_flake(pa, pb, limit - 1);
+            snow_flake(pb, pc, limit - 1);
+            snow_flake(pc, p2, limit - 1);
+
+        } else {
+            point(p1, pa, 'tron');
+            point(p2, pc, 'tron');
+            point(pa, pb, 'tron');
+            point(pc, pb, 'tron');
         }
-  };
-  
-  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0},5);
-   
-  //triangle({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 3);
+    }
 
+    function poly(sides, r){
+        var cos = Math.cos; 
+        var sin = Math.sin;
+        var PI = Math.PI;
+        var tmp = null;
+        var s = sides || 5;
+        for( var x=0; x<=(2*PI); x+=((2*PI)/sides) ){
+            var p = new Vector([15 * cos(x), 20 * sin(x), 0.0] );
+            console.log(p.v);
+            if(tmp){
+                point(tmp.v, p.v, 'tron');
+                if(r)
+                snow_flake(p.v, tmp.v, 3);
+                else    
+                snow_flake(tmp.v, p.v, 3);
+            }
+            tmp = p;
+        }
+    }
  
 
 
 
+    poly(5, false);
 
 
     buffer.geometry({
@@ -182,6 +202,7 @@ var sierpinski = function(p1, p2, p3, limit){
     var stp = 0.01;
     var anim = 0;
     var entity = {};
+     scene.clean();
     function render() {
 
         var ms = 17;
@@ -200,13 +221,14 @@ var sierpinski = function(p1, p2, p3, limit){
             entity = {
                 buffer: buffer,
                 model: t.m,
-                drawType: 'LINES'
+                drawType: 'POINTS'
             }
+
+
+
         }
 
         requestAnimFrame(render);
-
-     scene.clean();
         scene.render(entity);
     }
 

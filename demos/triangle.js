@@ -1,58 +1,132 @@
-(function(){
-  var core   = new VR8.Core(true);
-  var buffer = new VR8.Buffer();
-  var shader = new VR8.Shader();
-  var frag   = document.getElementById('fragment-shader').innerHTML;
-  var vert   = document.getElementById('vertex-shader').innerHTML;
-  var camera    = VR8.Camera.MakeOrtho(0,50,50,0,1,-1);
-  var scene     = new VR8.Scene2D();
-  var pos = {x:0, y:0};  
-  var mov = {x:0, y:0}; 
-  var zoomOut = false; 
- 
+(function() {
 
-  shader.link(vert, frag);
-  
-  var init_shader = function(){
-    var p = shader.program;
-    shader.use();
-    
-    shader
-    .attribute('position')
-    .attribute('colors')
-    .uniform('MV')
-    .uniform('P');
+    var a = document.getElementById('canvas-surface');
+    var core = new VR8.Core(true);
+    var buffer = new VR8.Buffer();
+    var shader = new VR8.Shader();
+    var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
+    var scene = new VR8.Scene2D();
 
+    shader.create(VR8.Stock2D);
     scene.shader = shader;
     scene.camera = camera;
-  }();
-  
-  var line_triangle = VR8.geometry.mesh(160);
 
-  var triangle = function(){
-    var buffer = new VR8.Buffer();
-    buffer.no_color_data = false;
-    return {
-        cord: function(p1, p2,p3, deep){
-            var vec_gray = new Vector(0.6,0.7,0.7);
-            deep = deep * 0.0001;
-            line_triangle.add( new Vector(  p1.x,  p1.y, 0.0),vec_gray.multiplyByScalar(deep)  ); 
-            line_triangle.add( new Vector(  p2.x,  p2.y, 0.0),vec_gray.multiplyByScalar(deep)   ); 
-            
-            line_triangle.add( new Vector(  p1.x,  p1.y, 0.0), vec_gray.multiplyByScalar(deep)  ); 
-            line_triangle.add( new Vector(  p3.x,  p3.y, 0.0),vec_gray.multiplyByScalar(deep)   ); 
-            
-            line_triangle.add( new Vector(  p3.x,  p3.y, 0.0), vec_gray.multiplyByScalar(deep) ); 
-            line_triangle.add( new Vector(  p2.x,  p2.y, 0.0), vec_gray.multiplyByScalar(deep)  );
+    var deg_rad = function(angle) {
+        return angle * Math.PI / 180;
+    };
+
+
+    var Vertex = function() {}
+
+    var decorate = function(obj) {
+
+        var proto = obj.prototype;
+
+        for (var keys in this) {
+            proto[keys] = this[keys];
+        }
+    }
+
+    var VertexBuffer = {
+
+        vertexArray: [],
+
+        save: function(pos, color) {
+            for (var p in pos) {
+                this.vertexArray.push(pos[p]);
+            }
+            for (var c in color) {
+                this.vertexArray.push(color[c]);
+            }
+            this.vertexArray.push(1.0); // alpha for color;
+
             return this;
         },
-        buffer: function(){ 
-            buffer.geometry({points: line_triangle.buffer(), size: 7});
-            return buffer; }
-    }
-  }();
 
-  var level = 0;
+        clear: function(){
+            this.vertexArray = [];
+        },
+
+        decorate: decorate
+    };
+
+
+    var Morph = {
+        morphing: [],
+
+        savePoints: function(p1, p2, color) {
+
+            this.morphing.push({
+                pointA: new Vector(p1),
+                pointB: new Vector(p2),
+                color: rgbc(25, 245, 245)
+            });
+
+            return this;
+        },
+
+        step: function(delta) {
+
+            var self = this;
+            
+            self.clear(); 
+
+            this.morphing.forEach(function(seg) {
+                var p1 = seg.pointA.v;
+                var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
+                var color = VR8.Lerp(seg.color.copy(), rgbc(45, 124, 123), delta).v;
+
+                self.save(p1, seg.color.v);
+                self.save(p2, color);
+            });
+            return this;
+        },
+
+        decorate: decorate
+    }
+
+    VertexBuffer.decorate(Vertex);
+    Morph.decorate(Vertex);
+
+    var vert = new Vertex();
+
+    var rgbc = function(r, g, b) {
+        var v = new Float32Array([r, g, b]);
+        v = v3.div_scalar(v, 250);
+        return new Vector(v);
+    }
+
+    var point = function(p1, p2, n) {
+        var c = {};
+
+        c.red = new Vector4(1, 0.5, 0.0, 1.0);
+        c.blue = new Vector4(0.2, 0.2, 1, 1.0);
+        c.white = new Vector4(0.22, 0.22, 0.22, 1.0);
+        c.green = new Vector4(0.2, 1, 0.2, 1.0);
+        c.tron = rgbc(210, 234, 252);
+
+        var color = c[n] || c.white;
+
+        vert.savePoints(p1, p2);
+    }
+
+
+var adapt = function(p){
+    return new Vector([p.x, p.y, 0.0]);
+}
+
+var triangle = function(p1, p2, p3){
+    
+    var v1 = adapt(p1);
+    var v2 = adapt(p2);
+    var v3 = adapt(p3);
+
+    point(v1,v2, 'tron');
+    point(v2,v3, 'tron');
+    point(v3,v1, 'tron');
+
+}
+
 var sierpinski = function(p1, p2, p3, limit){
         if(limit >0){
           var pa = {
@@ -74,55 +148,68 @@ var sierpinski = function(p1, p2, p3, limit){
           sierpinski(pa,p2,pb, limit-1);
           sierpinski(pc,pb,p3, limit-1);
         }else{
-            level ++;
-          triangle.cord(p1,p2,p3,level);
+          triangle(p1,p2,p3);
         }
   };
   
-  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 3);
-  
-  var t = new VR8.Transform(); 
-  t.translate(25,25).scale(1,1,0);
-  var entity = {
-    buffer: triangle.buffer(),
-    model: t.m,
-    drawType: 'LINES'
-  }
+  sierpinski({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0},5);
+   
+  //triangle({x: 0.0, y: -24.0 }, {x: -20.0, y:20.0}, {x:20.0, y: 20.0}, 3);
 
-  function init(){
-  }
-  var p = {x: 0, y:0};
-  var f = new Vector(0.5,0.5,0);
-  var zoomx1 = new Vector(1.0,1.0,0.0); 
-  var step = new Vector(0.006, 0.006, 0.006); 
-  var tm = 0; 
-  var rot = 0.1;
-  function update(){
-      p.x += mov.x; 
-      p.y += mov.y;
-      rot += 1;
-     // t.scale(f.v[0],f.v[1],0);
-      t.rotateY(rot); ////.translate(25+p.x,25+p.y,0);
-      f.add(step);
  
-      if(zoomOut){
-        tm+= 0.001; 
-        VR8.Lerp(f,zoomx1, tm);
-        if(tm >= 1){  zoomOut = false; tm=0;} 
-      }  
 
 
-  }
-  
-  function render(){
-    //update();
 
-    requestAnimFrame(render);
-    scene.clean();
-    scene.render(entity);
-  }
 
-  init();
-  render();
+
+    buffer.geometry({
+        points: vert.step(0.2).vertexArray,
+        size: 7
+    });
+
+    buffer.no_color_data = false;
+
+    var t = new VR8.Transform();
+    t.translate(25, 25, 0).scale(1, 1, 0);
+
+    var entity = {
+        buffer: buffer,
+        model: t.m,
+        drawType: 'LINES'
+    }
+
+    var sin = Math.sin;
+    var stp = 0.01;
+    var anim = 0;
+    var entity = {};
+    function render() {
+
+        var ms = 17;
+        var step = (1 / 60) * 1000;
+        var dt = ((ms / step) | 0) * step;
+
+        if (anim < 1.0) {
+            anim += stp;
+
+            console.log('->', anim);
+
+            buffer.geometry({
+                points: vert.step(anim).vertexArray,
+                size: 7
+            });
+            entity = {
+                buffer: buffer,
+                model: t.m,
+                drawType: 'LINES'
+            }
+        }
+
+        requestAnimFrame(render);
+
+     scene.clean();
+        scene.render(entity);
+    }
+
+    render();
 
 }());
