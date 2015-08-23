@@ -179,7 +179,7 @@
 
 
 
-    poly(3, false);
+    poly(2, false);
 
 
     buffer.geometry({
@@ -220,7 +220,7 @@
             entity = {
                 buffer: buffer,
                 model: t.m,
-                drawType: 'LINES'
+                drawType: 'POINTS'
             }
 
 

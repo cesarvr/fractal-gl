@@ -202,6 +202,7 @@
     var entity = {};
     var dim = 2;
     var inside = false;
+    var type = 'LINES'
 
     function render() {
 
@@ -212,9 +213,10 @@
         anim += stp;
 
 
-        if (dim > 8) {
+        if (dim > 6) {
             inside = !inside;
             dim = 2;
+            type= (type === 'LINES')?'POINTS':'LINES';
         }
 
 
@@ -233,7 +235,7 @@
         entity = {
             buffer: buffer,
             model: t.m,
-            drawType: 'LINES'
+            drawType: type
         }
 
 
