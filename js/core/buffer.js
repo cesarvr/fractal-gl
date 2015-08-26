@@ -5,9 +5,13 @@ VR8.Buffer = function() {
     this.render_type = gl.STATIC_DRAW;
     this.size = 0;
     this.stride = 0;
+
     this.color_size = 4;
     this.vertex_size = 3;
+    this.texture_size = 2;
+
     this.no_color_data = true;
+    this.no_texture = true; 
 
     this.geometry = function(g) {
         this.buffer = gl.createBuffer();
@@ -40,6 +44,25 @@ VR8.Buffer = function() {
             false,
             this.stride,
             0);
+    }
+
+    this.upload_texture = function(shader_texture) {
+        if (this.no_texture)
+            return;
+
+        var offset = this.vertex_size * Float32Array.BYTES_PER_ELEMENT;
+
+        if(!this.no_color_data)
+            offset += this.color_size * Float32Array.BYTES_PER_ELEMENT;        
+
+        gl.vertexAttribPointer(
+            shader_texture,
+            this.texture_size,
+            gl.FLOAT,
+            false,
+            this.stride,
+            offset
+        );
     }
 
     this.upload_colors = function(shader_color) {

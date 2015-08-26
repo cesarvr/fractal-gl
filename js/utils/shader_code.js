@@ -1,5 +1,5 @@
 VR8.Stock2D = {};
-
+VR8.Script = {};
 
 VR8.Stock2D.vertex =
     'attribute vec3 position; \
@@ -23,6 +23,7 @@ VR8.Stock2D.fragment =
     }';
 
 
+
 VR8.Stock2D.init = function(shader) {
     shader.use();
     shader
@@ -31,4 +32,23 @@ VR8.Stock2D.init = function(shader) {
         .uniform('MV')
         .uniform('P');
 
+}
+
+
+
+function getCode(from){
+    return document.getElementById(from).innerHTML;
+}
+
+VR8.Script.vertex = getCode('vertex-shader');
+VR8.Script.fragment = getCode('fragment-shader');
+
+VR8.Script.init = function(shader) {
+    shader.use();
+    shader
+        .attribute('position')
+        .attribute('texture')
+        .uniform('MV')
+        .uniform('uSampler')
+        .uniform('P');
 }

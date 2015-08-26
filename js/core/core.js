@@ -5,8 +5,8 @@ VR8.Core = function(fullscreen) {
         _canvas = document.createElement('CANVAS');
         _canvas.setAttribute('width', 800);
         _canvas.setAttribute('height', 600);
-        _canvas.setAttribute('style', 'position:absolute; left:0px; top:0px; border-style:none;'); 
-        
+        _canvas.setAttribute('style', 'position:absolute; left:0px; top:0px; border-style:none;');
+
 
         return _canvas;
     }
@@ -26,7 +26,7 @@ VR8.Core = function(fullscreen) {
             }
 
             VR8.webGL = gl;
-            
+
             if (fullscreen) {
                 _canvas.style.width = window.innerWidth + "px";
                 _canvas.style.height = window.innerHeight + "px";
@@ -36,13 +36,23 @@ VR8.Core = function(fullscreen) {
 
             VR8.W = _canvas.width;
             VR8.H = _canvas.height;
-        
+
         } catch (e) {
             console.log(e);
         }
 
     }();
 }
+
+VR8.Extend = function(obj, prop) {
+        var proto = obj.prototype;
+
+        for (var keys in prop) {
+            proto[keys] = prop[keys];
+        }
+}
+
+
 
 VR8.Scene2D = function() {
 
@@ -56,7 +66,7 @@ VR8.Scene2D = function() {
     /* this method can be override for custom functionality. */
 
     this.clean = function() {
-        gl.clear(gl.COLOR_BUFFER_BIT ); 
+        gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
     this.prepare = function(entity) {
@@ -66,9 +76,14 @@ VR8.Scene2D = function() {
         });
 
         gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer.buffer);
-        
+
         entity.buffer.upload_vertex(this.shader.vars.position);
+        entity.buffer.upload_texture(this.shader.vars.texture);
         entity.buffer.upload_colors(this.shader.vars.colors);
+        
+        if(entity.texture)
+            entity.texture.prepare(this.shader.vars);
+        
     }
 
     this.draw = function(entity) {

@@ -3,31 +3,36 @@
   <title>fractals</title>
 <body>
 </body>
+
+
 <script id="vertex-shader" type="vertex">
-    attribute vec3 position;
-    attribute vec4 colors;
 
-    uniform mat4 MV;
-    uniform mat4 P;
-    varying vec4 frag_color;
-
-    void main(void) {
+     attribute vec3 position;
+     attribute vec2 texture;  
+     uniform mat4 MV;
+     uniform mat4 P;
+     varying vec2 oTexture;
+     
+    void main(void) { 
       gl_Position = MV * P * vec4(position, 1.0);
-      frag_color = colors;
-    }
+      oTexture= texture;
+     }
+
 </script>
 
 
 <script id="fragment-shader" type="fragment">
+    
     precision mediump float;
-    varying vec4 frag_color;
-
+    varying vec2 oTexture;
+    uniform sampler2D uSampler;
 
     void main(void) {
-        gl_FragColor = frag_color;
-
+        gl_FragColor = texture2D(uSampler, oTexture);
     }
+
 </script>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   <script src="js/math/vector.js"></script>
   <script src="js/math/matrix.js"></script>
@@ -36,6 +41,8 @@
   <script src="js/core/shader.js"></script>
   <script src="js/core/buffer.js"></script>
   <script src="js/core/geometry.js"></script>
+  <script src="js/core/texture.js"></script>
+ 
   <script src="js/utils/util.js"></script>
   <script src="js/entity/point.js"></script>
   <script src="js/utils/shader_code.js"></script>
