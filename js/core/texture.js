@@ -4,10 +4,21 @@ VR8.Texture = function() {
     this.hasChange = false;
 }
 
+
+
+VR8.Texture.prototype.Extend = function(options){
+    this.texture = this.gl.createTexture();
+    
+    options.initialize.bind(this)();
+}
+
+
 VR8.Texture.prototype.loadImage = function(image) {
 
     var gl = VR8.webGL;
+
     this.texture = gl.createTexture();
+
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     

@@ -5,9 +5,21 @@
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
-    var scene = new VR8.Scene2D();
+    var scene = new VR8.Scene2D({ clear: {r:1, g:1, b:1}});
 
-    shader.create(VR8.Stock2D);
+
+    VR8.Script.init = function(shader) {
+    shader.use();
+    shader
+        .attribute('position')
+        .attribute('colors')
+        .uniform('MV')
+        .uniform('P');
+    }
+
+
+
+    shader.create(VR8.Script);
     scene.shader = shader;
     scene.camera = camera;
 
@@ -59,7 +71,7 @@
                 pointA: new Vector(p1),
                 pointB: new Vector(p2),
                 color1: color,
-                color2: rgbc(173, 173,  209)
+                color2: rgbc(209, 209,  209)
             });
 
             return this;
@@ -74,7 +86,7 @@
 
             this.morphing.forEach(function(seg) {
                 var p1 = seg.pointA.v;
-                var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
+                var p2 = VR8.CosLerp(seg.pointA.copy(), seg.pointB, delta).v;
                 var color = VR8.Lerp(seg.color1.copy(), seg.color2.copy(), delta).v;
 
 
@@ -109,7 +121,7 @@
         c.blue = new Vector4(0.2, 0.2, 1, 1.0);
         c.white = new Vector4(0.22, 0.22, 0.22, 1.0);
         c.green = new Vector4(0.2, 1, 0.2, 1.0);
-        c.tron = rgbc(210, 234, 252);
+        c.tron = rgbc(158, 158, 158);
 
         var color = c[n] || c.white;
 
@@ -197,7 +209,7 @@
     }
 
     var sin = Math.sin;
-    var stp = 0.04;
+    var stp = 0.05;
     var anim = 0;
     var entity = {};
     var dim = 2;
@@ -237,9 +249,6 @@
             model: t.m,
             drawType: type
         }
-
-
-
 
 
 

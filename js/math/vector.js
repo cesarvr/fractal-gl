@@ -133,6 +133,15 @@ VR8.Lerp = function(v0, v1, t) {
    return  v0.scalar_mul(1.0 - t).add(v1.multiplyByScalar(t));
 }
 
+VR8.CosLerp = function(v0, v1, t){
+ var ft = t * Math.PI; 
+ var f  = (1 - Math.cos(ft)) * .5; 
+   return  v0.scalar_mul(1.0 - f).add(v1.multiplyByScalar(f));
+}
+
+
+
+
 
 
 

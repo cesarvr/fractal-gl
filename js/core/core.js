@@ -54,15 +54,18 @@ VR8.Extend = function(obj, prop) {
 
 
 
-VR8.Scene2D = function() {
+VR8.Scene2D = function(options) {
 
     var Width = VR8.W;
     var Height = VR8.H;
     var gl = VR8.webGL;
     this.shader = {};
     this.camera = {};
+    
     gl.viewport(0, 0, Width, Height);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(  (options.clear.r  || 0.0) , 
+                    (options.clear.g  || 0.0) , 
+                    (options.clear.b  || 0.0) , 1.0);
     /* this method can be override for custom functionality. */
 
     this.clean = function() {

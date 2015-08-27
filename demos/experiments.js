@@ -23,7 +23,7 @@
 
 
         this.save = function(vertex) {
-           var self = this; 
+            var self = this;
             Object.keys(vertex)
                 .forEach(function(attr) {
                     var obj = vertex[attr];
@@ -112,22 +112,25 @@
 
     function render() {
 
-        var ms = 17;
-        var step = (1 / 60) * 1000;
-        var dt = ((ms / step) | 0) * step;
+            var ms = 17;
+            var step = (1 / 60) * 1000;
+            var dt = ((ms / step) | 0) * step;
 
-        requestAnimFrame(render);
+            requestAnimFrame(render);
 
-        scene.clean();
-        scene.render(entity);
-    }
+            scene.clean();
+            scene.render(entity);
+        }
+       
+            Assets.Fetch(['img/berry.png'], function(assets) {
+                debugger;
+                texture.loadImage(assets[0]);
+                render();
+            });
+        
 
-    Assets.Fetch(['img/berry.png'], function(assets) {
-        debugger;
-        texture.loadImage(assets[0]);
-        render();
-    });
+    
 
-    //render();
+
 
 }());
