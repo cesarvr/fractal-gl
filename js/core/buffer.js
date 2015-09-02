@@ -27,6 +27,13 @@ VR8.Buffer = function() {
         this.stride = g.size * Float32Array.BYTES_PER_ELEMENT;
     }
 
+    this.setRenderType = function(renderType){
+        if(gl[renderType] > 0) {
+            this.render_type = gl[renderType];
+            console.log('render type-> ', renderType);
+        }
+    }
+    
 
     this.update = function(g) {
         gl.bufferData(

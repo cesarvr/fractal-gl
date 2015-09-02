@@ -87,7 +87,6 @@
                 var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
                 var color = VR8.Lerp(seg.color1.copy(), seg.color2.copy(), delta).v;
 
-
                 self.save(p1, color);
                 self.save(p2, color);
             });
@@ -180,8 +179,7 @@
         var tmp = null;
         var s = sides || 5;
         for (var x = 0; x <= (2 * PI); x += ((2 * PI) / sides)) {
-            var p = new Vector([15 * cos(x), 20 * sin(x), 0.0]);
-            console.log(p.v);
+            var p = new Vector([17 * cos(x), 23 * sin(x), 0.0]);
             if (tmp) {
                 point(tmp.v, p.v, 'tron');
                 if (r)
@@ -238,6 +236,7 @@
             dim++;
         }
 
+        buffer.setRenderType('STREAM_DRAW');
         buffer.geometry({
             points: vert.step(anim).vertexArray,
             size: 7

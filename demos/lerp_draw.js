@@ -77,7 +77,7 @@
 
         step: function(delta) {
 
-            if(delta > 1) return this;
+            if(delta >= 1.00000) return this;
             var self = this;
 
             self.clear();
@@ -180,8 +180,7 @@
         var tmp = null;
         var s = sides || 5;
         for (var x = 0; x <= (2 * PI); x += ((2 * PI) / sides)) {
-            var p = new Vector([15 * cos(x), 20 * sin(x), 0.0]);
-            console.log(p.v);
+            var p = new Vector([18 * cos(x), 25 * sin(x), 0.0]);
             if (tmp) {
                 point(tmp.v, p.v, 'tron');
                 if (r)
@@ -200,6 +199,8 @@
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
 
+    buffer.setRenderType('STREAM_DRAW');
+
     var entity = {
         buffer: buffer,
         model: t.m,
@@ -207,7 +208,7 @@
     }
 
     var sin = Math.sin;
-    var stp = 0.05;
+    var stp = 0.03;
     var anim = 0;
     var entity = {};
     var dim = 2;
