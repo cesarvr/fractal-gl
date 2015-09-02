@@ -17,8 +17,6 @@
         .uniform('P');
     }
 
-
-
     shader.create(VR8.Script);
     scene.shader = shader;
     scene.camera = camera;
@@ -86,7 +84,7 @@
 
             this.morphing.forEach(function(seg) {
                 var p1 = seg.pointA.v;
-                var p2 = VR8.CosLerp(seg.pointA.copy(), seg.pointB, delta).v;
+                var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
                 var color = VR8.Lerp(seg.color1.copy(), seg.color2.copy(), delta).v;
 
 

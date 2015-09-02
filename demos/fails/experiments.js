@@ -122,6 +122,7 @@
         requestAnimFrame(render);
         scene.clean();
 
+        window.text(stp);
         scene.render(entity);
     }
 

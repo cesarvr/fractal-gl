@@ -4,11 +4,8 @@ VR8.Texture = function() {
     this.hasChange = false;
 }
 
-
-
 VR8.Texture.prototype.Extend = function(options){
     this.texture = this.gl.createTexture();
-    
     options.initialize.bind(this)();
 }
 
