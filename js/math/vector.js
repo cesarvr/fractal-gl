@@ -9,6 +9,7 @@ var Vector = function(opt) {
     } else {
         val = new Float32Array([opt.x, opt.y, opt.z]);
     }
+
     this.v = val;
 
     this.get = function() {
