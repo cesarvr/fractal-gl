@@ -5,22 +5,16 @@
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
-    var scene = new VR8.Scene2D({
-        clear: {
-            r: 1,
-            g: 1,
-            b: 1
-        }
-    });
+    var scene = new VR8.Scene2D({ clear: {r:1, g:1, b:1}});
 
 
     VR8.Script.init = function(shader) {
-        shader.use();
-        shader
-            .attribute('position')
-            .attribute('colors')
-            .uniform('MV')
-            .uniform('P');
+    shader.use();
+    shader
+        .attribute('position')
+        .attribute('colors')
+        .uniform('MV')
+        .uniform('P');
     }
 
     shader.create(VR8.Script);
@@ -30,6 +24,8 @@
     var deg_rad = function(angle) {
         return angle * Math.PI / 180;
     };
+
+
 
     var extend = function(obj) {
 
@@ -44,16 +40,13 @@
 
         vertexArray: [],
 
-        pack: function(data) {
-            var len = data.length;
-            for (var x = 0; x < len; x++)
-                this.vertexArray.push(data[x]);
-        },
-
         save: function(pos, color) {
-
-            this.pack(pos);
-            this.pack(color);
+            for (var p in pos) {
+                this.vertexArray.push(pos[p]);
+            }
+            for (var c in color) {
+                this.vertexArray.push(color[c]);
+            }
             this.vertexArray.push(1.0); // alpha for color;
 
             return this;
@@ -76,7 +69,7 @@
                 pointA: new Vector(p1),
                 pointB: new Vector(p2),
                 color1: color,
-                color2: rgbc(209, 209, 209)
+                color2: rgbc(209, 209,  209)
             });
 
             return this;
@@ -84,24 +77,19 @@
 
         step: function(delta) {
 
-            if (delta >= 1.00000) return this;
-            this.clear();
-
+            if(delta > 1) return this;
             var self = this;
-            var len = this.morphing.length;
 
-            for (var i = 0; i < len; i++) {
-                var seg = this.morphing[i];
+            self.clear();
 
+            this.morphing.forEach(function(seg) {
                 var p1 = seg.pointA.v;
                 var p2 = VR8.Lerp(seg.pointA.copy(), seg.pointB, delta).v;
                 var color = VR8.Lerp(seg.color1.copy(), seg.color2.copy(), delta).v;
 
-
-                this.save(p1, color);
-                this.save(p2, color);
-            }
-
+                self.save(p1, color);
+                self.save(p2, color);
+            });
             return this;
         },
 
@@ -118,7 +106,7 @@
     var vert;
 
     var rgbc = function(r, g, b) {
-        var v = new Float32Array([r, g, b]);1
+        var v = new Float32Array([r, g, b]);
         v = v3.div_scalar(v, 250);
         return new Vector(v);
     }
@@ -191,13 +179,13 @@
         var tmp = null;
         var s = sides || 5;
         for (var x = 0; x <= (2 * PI); x += ((2 * PI) / sides)) {
-            var p = new Vector([18 * cos(x), 25 * sin(x), 0.0]);
+            var p = new Vector([17 * cos(x), 23 * sin(x), 0.0]);
             if (tmp) {
                 point(tmp.v, p.v, 'tron');
                 if (r)
-                    snow_flake(p.v, tmp.v, 3);
+                    snow_flake(p.v, tmp.v, 5);
                 else
-                    snow_flake(tmp.v, p.v, 3);
+                    snow_flake(tmp.v, p.v, 5);
             }
             tmp = p;
         }
@@ -210,8 +198,6 @@
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
 
-    buffer.setRenderType('STREAM_DRAW');
-
     var entity = {
         buffer: buffer,
         model: t.m,
@@ -219,7 +205,7 @@
     }
 
     var sin = Math.sin;
-    var stp = 0.03;
+    var stp = 0.05;
     var anim = 0;
     var entity = {};
     var dim = 2;
@@ -227,14 +213,20 @@
     var type = 'LINES'
 
     function render() {
+
+        var ms = 17;
+        var step = (1 / 60) * 1000;
+        var dt = ((ms / step) | 0) * step;
+
         anim += stp;
 
 
         if (dim > 6) {
             inside = !inside;
             dim = 2;
-            type = (type === 'LINES') ? 'POINTS' : 'LINES';
+            type= (type === 'LINES')?'POINTS':'LINES';
         }
+
 
         if (anim > 5 || dim < 3) {
 
@@ -244,11 +236,11 @@
             dim++;
         }
 
-        buffer.editGeometry({
+        buffer.setRenderType('STREAM_DRAW');
+        buffer.geometry({
             points: vert.step(anim).vertexArray,
             size: 7
         });
-
         entity = {
             buffer: buffer,
             model: t.m,
