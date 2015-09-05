@@ -162,7 +162,7 @@
         }
 
         this.end = function(args) {
-
+            this.finishedTask = true; 
             self.postMessage(args);
         }
     }

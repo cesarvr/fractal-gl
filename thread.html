@@ -51,7 +51,7 @@
     void main(void) {
       gl_Position = MV * P * vec4(position, 1.0);
       frag_color = colors;
-      gl_PointSize = 3.0;
+      gl_PointSize = 2.0;
     }
 </script>
 
@@ -70,6 +70,7 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>       
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.min.js"></script>
   <script src="js/math/vector.js"></script>
   <script src="js/math/matrix.js"></script>
   <script src="js/math/transform.js"></script>
@@ -83,6 +84,7 @@
   <script src="js/entity/point.js"></script>
   <script src="js/utils/shader_code.js"></script>
    
-  <script src="demos/thread/app.js"></script> 
+  <script src="demos/thread/app.js"></script>
+
   <!-- <script src="demos/thread/koch_process.js"></script> -->
 </html>

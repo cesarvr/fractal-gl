@@ -27,17 +27,44 @@
     scene.shader = shader;
     scene.camera = camera;
 
+    
+   var stats = new Stats();
+   stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+
+   // align top-left
+   stats.domElement.style.position = 'absolute';
+   stats.domElement.style.left = '0px';
+   stats.domElement.style.top = '0px';
+
+
+   document.body.appendChild( stats.domElement );
+
+
+
+
+
+
+
+
     var WorkerServer = function() {
         var workers = [];
         var observers = [];
         var processFile = null;
-        var result = [];
 
         var _execute = function(method, args) {
             this.postMessage({
                 cmd: method,
                 args: args
             });
+        };
+
+        this.clear = function() {
+            var len = workers.length;
+            for (var i = 0; i < len; i++) {
+                workers[i].terminate();
+            }
+
+            workers = [];
         };
 
         this.getWorkersCount = function() {
@@ -64,15 +91,21 @@
         };
 
         this.spawn = function() {
+
             var wrk = new Worker(processFile);
+
             wrk.addEventListener('message', this.notify);
             wrk.execute = _execute;
+            wrk.idle = false;
 
             workers.push(wrk);
             return wrk;
+
         };
-        
+
         this.notify = function(args) {
+            this.idle = true;
+
             observers.forEach(function(observer) {
                 observer.notify(args.data);
             });
@@ -110,14 +143,14 @@
 
         this.fnRender = function(shape) {
 
-             _self.clean();
+            _self.clean();
 
             _self.server
                 .spawn()
                 .execute('snowAdapter', {
                     p1: shape.p1.v,
                     p2: shape.p2.v,
-                    recursive: 2
+                    recursive: shape.recursive
                 });
 
             busy = true;
@@ -137,8 +170,10 @@
         };
 
         this.clean = function() {
-            if (buffer.length > 0)
+            if (buffer.length > 0) {
                 buffer = [];
+                _self.server.clear();
+            }
         };
 
         this.getBuffer = function() {
@@ -162,7 +197,7 @@
      *
      */
 
-    function poly(sides, clockwise, renderFn) {
+    function poly(sides, clockwise, renderFn, recursive ) {
         var cos = Math.cos;
         var sin = Math.sin;
         var PI = Math.PI;
@@ -177,14 +212,16 @@
 
                     renderFn({
                         p1: point,
-                        p2: tmp
+                        p2: tmp,
+                        recursive: recursive
                     });
 
                 } else {
 
                     renderFn({
                         p1: tmp,
-                        p2: point
+                        p2: point,
+                        recursive: recursive
                     });
 
                 }
@@ -194,24 +231,38 @@
     }
 
 
-    poly(2, false, myRender.fnRender);
 
-    var stp = 0.01;
+    var stp = 0.01, dimensions = 2, clockwise = false, type='LINES', recursive = 1;
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
 
     buffer.no_color_data = false;
 
+    poly(dimensions, false, myRender.fnRender);
 
     function render() {
+        stats.begin();
+
         if (myRender.isTerminated() && !myRender.isBusy()) {
             myRender.interpolate(stp);
-            stp += 0.04;
+            stp += 0.03;
         }
 
         if (stp > 1.9) {
             stp = 0;
-            poly(3, false, myRender.fnRender);
+            poly(dimensions, false, myRender.fnRender, recursive);
+            dimensions++;
+        }
+
+        if (dimensions > 5){
+           stp = 0;
+           recursive ++;
+           dimensions = 2;
+           clockwise = !clockwise;
+           type = (type === 'LINES') ? 'POINTS' : 'LINES';
+
+           if(recursive >4) recursive = 1;
+            
         }
 
         buffer.geometry({
@@ -228,68 +279,15 @@
 
         scene.clean();
         scene.render(entity);
-
+    
+        stats.end();
+        
         requestAnimFrame(render);
     }
 
     render();
 
-    /*
-           var t = new VR8.Transform();
-        t.translate(25, 25, 0).scale(1, 1, 0);
-
-        var entity = {
-            buffer: buffer,
-            model: t.m,
-            drawType: 'LINES'
-        }
-
-        var inside = false;
-        var type = 'LINES'
-
-
-        function render() {
-
-            anim += stp;
-
-
-            if (dim > 6) {
-                inside = !inside;
-                dim = 2;
-                type = (type === 'LINES') ? 'POINTS' : 'LINES';
-            }
-
-            if (anim > 5 || dim < 3) {
-
-                vert = new Vertex();
-                poly(dim, inside);
-                anim = 0;
-                dim++;
-            }
-
-            buffer.geometry({
-                points: vert.step(anim).vertexArray,
-                size: 7
-            });
-            entity = {
-                buffer: buffer,
-                model: t.m,
-                drawType: type
-            }
-
-
-
-            requestAnimFrame(render);
-            scene.clean();
-            scene.render(entity);
-        }
-
-        render();
-
-    */
-
-
-
+    
 
 
 
