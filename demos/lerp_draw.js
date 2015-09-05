@@ -107,7 +107,7 @@
     var vert;
 
     var rgbc = function(r, g, b) {
-        var v = new Float32Array([r, g, b]);
+        var v = new Float32Array([r, g, b]);1
         v = v3.div_scalar(v, 250);
         return new Vector(v);
     }
