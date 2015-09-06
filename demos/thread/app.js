@@ -5,13 +5,8 @@
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
-    var scene = new VR8.Scene2D({
-        clear: {
-            r: 1,
-            g: 1,
-            b: 1
-        }
-    });
+    var scene = new VR8.Scene2D();
+
 
 
     VR8.Script.init = function(shader) {
@@ -232,7 +227,17 @@
 
 
 
+
+    scene.setClearColor({
+            r: 1,
+            g: 1,
+            b: 1
+    });
+
+
+
     var stp = 0.01, dimensions = 2, clockwise = false, type='LINES', recursive = 1;
+    var recursiveLimit = 4;
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
 
@@ -261,7 +266,7 @@
            clockwise = !clockwise;
            type = (type === 'LINES') ? 'POINTS' : 'LINES';
 
-           if(recursive >4) recursive = 1;
+           if(recursive > recursiveLimit) recursive = 1;
             
         }
 
