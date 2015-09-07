@@ -1,7 +1,7 @@
 (function() {
 
     if (self.importScripts) {
-        self.importScripts('js/math/vector.js');
+        self.importScripts('http://cesarvr.github.io/fractal-gl/js/math/vector.js');
     }
 
     var rgbc = function(r, g, b) {
