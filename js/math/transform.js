@@ -33,13 +33,15 @@ VR8.Transform = function(_m) {
         mtx[5] = y;
         mtx[10] = z;
         return this;
-    }
+    };
+
     this.translate = function(x, y, z) {
         mtx[12] = x;
         mtx[13] = y;
         mtx[14] = z;
         return this;
-    }
+    };
+
     this.rotateX = function(angle) {
         var radian = _toRad(angle);
         

@@ -144,63 +144,22 @@
                 var xor = x ^ y;
                 pix.push(xor) // r
                 pix.push(xor) // g
-                    // pix.push(xor) // b 
+                pix.push(xor) // b 
             }
         }
         return pix;
     }
 
-    function genTables(textureSize) {
-        var dtable = [],
-            angleTable = [];
-
-        for (var x = 0; x < textureSize; x++) {
-            for (var y = 0; y < textureSize; y++) {
-                var angle = 0,
-                    distance = 0;
-                distance = Math.round((32.0 * textureSize / v3.len([(x - textureSize / 2.0), (y - textureSize / 2.0), 0])) % textureSize);
-                angle = Math.round(0.5 * textureSize * Math.atan2(y - textureSize / 2.0, x - textureSize / 2.0) / Math.PI);
-                dtable[(x * textureSize) + y] = distance;
-                angleTable[(x * textureSize) + y] = angle;
-            }
-        }
-        return {
-            distances: dtable,
-            angles: angleTable
-        };
-    }
-
-    function drawTexture(xorText, tables, textureSize, delta) {
-
-        var sx = textureSize * 1.0 * delta;
-        var sy = textureSize * 0.25 * delta;
-        var buffer = [];
-
-        for (var x = 0; x < textureSize; x++) {
-            for (var y = 0; y < textureSize; y++) {
-                var color = xorText[(((tables.distances[(x * textureSize) + y] + sx) % textureSize) * textureSize) +
-                    ((tables.angles[(x * textureSize) + y] + sy) % textureSize)];
-                if (typeof color === undefined) debugger;
-                buffer.push(color); //r 
-                buffer.push(color); //g
-                buffer.push(color); //b
-            }
-        }
-        return buffer;
-    }
-
-
 
     var textureSize = 256;
     var xorTexture = genTexture(textureSize);
-    var tables = genTables(textureSize);
     var step = 0.4;
 
     function text() {
         step += 0.1;
         var gl = 0;
         var init = function() {
-            var pixels = new Uint8Array(drawTexture(xorTexture, tables, textureSize, 1));
+            var pixels = new Uint8Array(genTexture(textureSize));
             //var pixels = new Uint8Array(genTexture(textureSize));
 
             texture.Extend({
@@ -218,16 +177,6 @@
                 }
             });
         }()
-        
-
-        return function(delta){
-
-            var pixels = new Uint8Array(drawTexture(xorTexture, tables, textureSize, delta));
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, textureSize, textureSize, 0, gl.RGB,
-                        gl.UNSIGNED_BYTE, pixels);
-
-
-        }
     }
 
 
