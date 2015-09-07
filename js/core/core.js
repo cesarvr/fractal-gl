@@ -56,7 +56,7 @@ VR8.Extend = function(obj, prop) {
 
 
 
-VR8.Scene2D = function(_options) {
+VR8.Scene2D = function() {
 
     var Width = VR8.W;
     var Height = VR8.H;
@@ -67,13 +67,14 @@ VR8.Scene2D = function(_options) {
 
     gl.viewport(0, 0, Width, Height);
     
-    if(options.clear)
-        gl.clearColor(options.clear.r , options.clear.g , options.clear.b, 1.0);
-    else
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
 
     /* this method can be override for custom functionality. */
+
+    this.setClearColor = function(clear){
+        gl.clearColor(clear.r , clear.g , clear.b, 1.0);
+    }
 
     this.clean = function() {
         gl.clear(gl.COLOR_BUFFER_BIT);

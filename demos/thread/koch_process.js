@@ -10,7 +10,7 @@
         return new Vector(v);
     }
 
-    var tron = rgbc(158, 158, 158);
+    var tron = rgbc(15, 15, 15);
 
 
     var extend = function(obj) {
@@ -26,13 +26,18 @@
 
         vertexArray: [],
 
+        pack: function(data) {
+            var len = data.length;
+            for (var x = 0; x < len; x++)
+                this.vertexArray.push(data[x]);
+        },
+
         save: function(pos, color) {
-            for (var p in pos) {
-                this.vertexArray.push(pos[p]);
-            }
-            for (var c in color) {
-                this.vertexArray.push(color[c]);
-            }
+
+            this.pack(pos);
+            this.pack(color);
+
+            if(color.length>0)
             this.vertexArray.push(1.0); // alpha for color;
 
             return this;
@@ -141,7 +146,7 @@
         this.snowFlake(p1, p2, recursive);
     }
 
-    Vertex.prototype.interpolate = function(step){
+    Vertex.prototype.interpolate = function(step) {
         return this.step(step).vertexArray;
     }
 
@@ -162,7 +167,7 @@
         }
 
         this.end = function(args) {
-            this.finishedTask = true; 
+            this.finishedTask = true;
             self.postMessage(args);
         }
     }
