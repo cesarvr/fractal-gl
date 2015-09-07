@@ -178,7 +178,7 @@
     };
 
     var spawnWorker = new WorkerServer();
-    spawnWorker.setProcessFile('/demos/thread/koch_process.js');
+    spawnWorker.setProcessFile('demos/thread/koch_process.js');
 
     var myRender = new MyRender();
     spawnWorker.subscribe(myRender);
