@@ -9,30 +9,6 @@ window.requestAnimFrame = (function() {
 
 
 
-function getMousePos(canvas, evt, viewport) {
-    var rect = canvas.getBoundingClientRect();
-    var x = evt.clientX - rect.left;
-    var y = evt.clientY - rect.top;
-
-    x = viewport.x * x / rect.right;
-    y = viewport.y * y / rect.bottom;
-    return {
-        x: x,
-        y: y
-    };
-}
-
-function randomN(val) {
-
-    return Math.floor(Math.random() * val) + 1
-}
-
-function randomF(val) {
-
-    return (Math.random() * (0.000120 - val) + val);
-}
-
-
 VR8.Utils = {};
 VR8.Utils.requestAnimationFrame = (function() {
     return window.requestAnimationFrame ||
@@ -44,24 +20,34 @@ VR8.Utils.requestAnimationFrame = (function() {
 })();
 
 
+VR8.Utils.Extend = function(obj, clazz) {
+
+    var proto = obj.prototype;
+
+    for (var keys in clazz) {
+        proto[keys] = clazz[keys];
+    }
+}
+
+
+
 
 /*
  *  Fetch: this class load all the maps async.
  */
 var Fetch = function(images, callback) {
     var imgObjects = [];
-    images.forEach(function(image){
-      var img = new Image();
-      img.onload = function() {
-        imgObjects.push(img);
-        if(imgObjects.length === images.length)
-            callback(imgObjects);
-      }   
-      img.src = image;
+    images.forEach(function(image) {
+        var img = new Image();
+        img.onload = function() {
+            imgObjects.push(img);
+            if (imgObjects.length === images.length)
+                callback(imgObjects);
+        }
+        img.src = image;
     });
 }
 
 
-
-VR8.Utils.Assets = {}; 
+VR8.Utils.Assets = {};
 VR8.Utils.Assets.Fetch = Fetch;

@@ -39,11 +39,7 @@
 
 
 
-    var deg_rad = function(angle) {
-        return angle * Math.PI / 180;
-    };
-
-    var extend = function(obj) {
+       var extend = function(obj) {
 
         var proto = obj.prototype;
 
