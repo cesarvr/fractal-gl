@@ -176,27 +176,4 @@
     var thread = new WorkerClient(vert);
 
 
-
-    /* 
-        if(e.data.cmd === 'koch'){
-            var tmp = e.data.data;
-            var p1 = tmp.p1; 
-            var p2 = tmp.p2; 
-            var recursion = tmp.recursive; 
-
-            debugger;
-            snow_flake(p1, p2, recursion);
-            self.finish = true;
-        }
-
-        if(e.data.cmd == 'vertex'){
-           compute(e.data.step); 
-        }
-
-    }, false);
-
-   
-*/
-
-
 }());

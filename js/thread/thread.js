@@ -1,31 +1,38 @@
+var Spawn = {};
+
 (function() {
 
-    var WorkerClient = function(_object) {
-        this.object = _object;
-        var _this = this;
+    var thread = function(_object) {
+        var that = {};
+
+        that.object = _object;
 
         self.addEventListener('message', function(e) {
-            _this.execute(e.data);
+            that.execute(e.data);
         });
 
-        this.execute = function(msg) {
-            _this.end({
+        that.execute = function(msg) {
+            that.end({
                 cmd: msg.cmd,
-                ret: this.object[msg.cmd](msg.args) || true
+                ret: that.object[msg.cmd](msg.args) || true
             });
         }
 
-        this.end = function(args) {
-            this.finishedTask = true;
+        that.end = function(args) {
+            that.finishedTask = true;
             self.postMessage(args);
         }
-    }
 
-    var WorkerServer = function() {
+        return that;
+    };
+
+        
+    
+   var server = function(_that) {
+        var that = _that || {};
         var workers = [];
         var observers = [];
         var processFile = null;
-
         var _execute = function(method, args) {
             this.postMessage({
                 cmd: method,
@@ -33,7 +40,8 @@
             });
         };
 
-        this.clear = function() {
+
+        that.clear = function() {
             var len = workers.length;
             for (var i = 0; i < len; i++) {
                 workers[i].terminate();
@@ -42,49 +50,64 @@
             workers = [];
         };
 
-        this.getWorkersCount = function() {
+        that.getWorkersCount = function() {
             return workers.length;
         };
 
-        this.workAll = function(method, args) {
+        that.workAll = function(method, args) {
             workers.forEach(function(worker) {
                 worker.execute(method, args);
             });
         };
 
-        this.changeBehavior = function(fn) {
+        that.changeBehavior = function(fn) {
             _execute = fn;
         };
 
-        this.subscribe = function(object) {
-            object.server = this;
+        that.subscribe = function(object) {
+            object.server = that;
             observers.push(object);
         };
 
-        this.setProcessFile = function(filename) {
+        that.setProcessFile = function(filename) {
             processFile = filename;
         };
 
-        this.spawn = function() {
+        that.spawn = function() {
 
             var wrk = new Worker(processFile);
 
-            wrk.addEventListener('message', this.notify);
+            wrk.addEventListener('message', that.notify);
             wrk.execute = _execute;
             wrk.idle = false;
 
             workers.push(wrk);
             return wrk;
-
         };
 
-        this.notify = function(args) {
-            this.idle = true;
+        that.notify = function(args) {
+            that.idle = true;
 
             observers.forEach(function(observer) {
                 observer.notify(args.data);
             });
         };
+
+        return that;
+    };
+
+
+
+    
+
+    Spawn = {
+        Thread: thread,
+        Server: server
+    };
+
+    if(typeof DedicatedWorkerGlobalScope ==='undefined' ){
+        window.Spawn = Spawn;
     }
+
 
 }());

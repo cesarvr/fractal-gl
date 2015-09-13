@@ -1,0 +1,22 @@
+{
+  "name": "fractal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cesarvr/fractal-gl.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cesarvr/fractal-gl/issues"
+  },
+  "homepage": "https://github.com/cesarvr/fractal-gl#readme",
+  "devDependencies": {
+    "browserify": "^11.0.1"
+  }
+}

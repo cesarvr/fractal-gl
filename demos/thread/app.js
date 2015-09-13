@@ -5,8 +5,9 @@
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
-    var scene = new VR8.Scene2D();
 
+    var scene = new VR8.Scene2D();
+    var vertex = new VR8.Geometry.Vertex;
 
 
     VR8.Script.init = function(shader) {
@@ -22,17 +23,16 @@
     scene.shader = shader;
     scene.camera = camera;
 
-    
-   var stats = new Stats();
-   stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+    var stats = new Stats();
+    stats.setMode(0); // 0: fps, 1: ms, 2: mb
 
-   // align top-left
-   stats.domElement.style.position = 'absolute';
-   stats.domElement.style.left = '0px';
-   stats.domElement.style.top = '0px';
+    // align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
 
 
-   document.body.appendChild( stats.domElement );
+    document.body.appendChild(stats.domElement);
 
 
 
@@ -192,7 +192,7 @@
      *
      */
 
-    function poly(sides, clockwise, renderFn, recursive ) {
+    function poly(sides, clockwise, renderFn, recursive) {
         var cos = Math.cos;
         var sin = Math.sin;
         var PI = Math.PI;
@@ -229,14 +229,18 @@
 
 
     scene.setClearColor({
-            r: 1,
-            g: 1,
-            b: 1
+        r: 1,
+        g: 1,
+        b: 1
     });
 
 
 
-    var stp = 0.01, dimensions = 2, clockwise = false, type='LINES', recursive = 1;
+    var stp = 0.01,
+        dimensions = 2,
+        clockwise = false,
+        type = 'LINES',
+        recursive = 1;
     var recursiveLimit = 4;
     var t = new VR8.Transform();
     t.translate(25, 25, 0).scale(1, 1, 0);
@@ -259,15 +263,15 @@
             dimensions++;
         }
 
-        if (dimensions > 5){
-           stp = 0;
-           recursive ++;
-           dimensions = 2;
-           clockwise = !clockwise;
-           type = (type === 'LINES') ? 'POINTS' : 'LINES';
+        if (dimensions > 5) {
+            stp = 0;
+            recursive++;
+            dimensions = 2;
+            clockwise = !clockwise;
+            type = (type === 'LINES') ? 'POINTS' : 'LINES';
 
-           if(recursive > recursiveLimit) recursive = 1;
-            
+            if (recursive > recursiveLimit) recursive = 1;
+
         }
 
         buffer.geometry({
@@ -284,15 +288,15 @@
 
         scene.clean();
         scene.render(entity);
-    
+
         stats.end();
-        
+
         requestAnimFrame(render);
     }
 
     render();
 
-    
+
 
 
 

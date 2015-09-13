@@ -1,4 +1,3 @@
-(function() {
 
     var a = document.getElementById('canvas-surface');
     var core = new VR8.Core(true);
@@ -275,4 +274,3 @@
 
     render();
 
-}());
