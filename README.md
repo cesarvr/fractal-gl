@@ -16,7 +16,7 @@ An nice Graphics API in constant evolution.
 - This is a koch fractal, with some linear interpolation between the points, [multi-thread] using webworkers. assign a thread to compute each side.
 
 <br>
-[[http://cesarvr.github.io/fractal-gl/thread.html]]
+[http://cesarvr.github.io/fractal-gl/thread.html]
 <br>
 
 - This is a koch fractal, with some linear interpolation between the points. 
