@@ -3,31 +3,31 @@ An nice Graphics API in constant evolution.
 
 ## Features
 
-> The API has a math library for 2d/3d vector and for 4x4 matrices. 
-> WebGL buffer handling. 
-> Shader API for easy shader linking. 
-> Some geometry classes for efficient packing. 
-> Texture capabilities is under construction.
-> Multithread [Web Workers].
+- The API has a math library for 2d/3d vector and for 4x4 matrices. 
+- WebGL buffer handling. 
+- Shader API for easy shader linking. 
+- Some geometry classes for efficient packing. 
+- Texture capabilities is under construction.
+- Multithread [Web Workers].
 
 
 ## For now only 2D, but here some demos showcasing the API.
 
-> This is a koch fractal, with some linear interpolation between the points, [multi-thread] using webworkers. I specially proud of
+- This is a koch fractal, with some linear interpolation between the points, [multi-thread] using webworkers. I specially proud of
 this one cause for one side of the geometry assign a thread.
 <br>
 [[http://cesarvr.github.io/fractal-gl/thread.html]]
 <br>
 
-> This is a koch fractal, with some linear interpolation between the points. 
+- This is a koch fractal, with some linear interpolation between the points. 
 <br>
 [http://cesarvr.github.io/fractal-gl/lerp_draw.html]
 
-> Procedural generated old school XOR Texture.
+- Procedural generated old school XOR Texture.
 <br>
 [http://cesarvr.github.io/fractal-gl/sierpinski.html]
 
-> Procedural generated old school XOR Texture.
+- Procedural generated old school XOR Texture.
 <br>
 [http://cesarvr.github.io/fractal-gl/texture_xor.html]
 
