@@ -13,8 +13,8 @@ An nice Graphics API in constant evolution.
 
 ## For now only 2D, but here some demos showcasing the API.
 
-- This is a koch fractal, with some linear interpolation between the points, [multi-thread] using webworkers. I specially proud of
-this one cause for one side of the geometry assign a thread.
+- This is a koch fractal, with some linear interpolation between the points, [multi-thread] using webworkers. assign a thread to compute each side.
+
 <br>
 [[http://cesarvr.github.io/fractal-gl/thread.html]]
 <br>
