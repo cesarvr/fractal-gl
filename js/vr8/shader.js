@@ -1,5 +1,9 @@
-var Shader = function(webGLContext, that) {
-    var gl = webGLContext;
+'use strict'
+
+var Factory = require('../utils/factory');
+
+var Shader = function(Core, that) {
+    var gl = Core;
     var program = null;
     var vars = {};
 
@@ -66,5 +70,4 @@ var Shader = function(webGLContext, that) {
     }
 }
 
-
-module.export = Shader;
+module.exports = new Factory(Shader);

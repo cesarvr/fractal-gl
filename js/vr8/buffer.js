@@ -1,11 +1,15 @@
-VR8.Buffer = function(webGLContext, that) {
+'use strict'
+
+var Factory = require('../utils/factory');
+
+Buffer = function(Core, that) {
 
     var that = that || {};
 
-    var gl = WebGLContext;
+    var gl = Core;
 
     var buffer = null;
-    var render_type = gl.STATIC_DRAW;
+    var bufferType = gl.STATIC_DRAW;
 
     var size = 0;
     var stride = 0;
@@ -19,10 +23,8 @@ VR8.Buffer = function(webGLContext, that) {
 
 
 
-    that.initBuffer = function() {
-        if (that.buffer === null)
-            buffer = gl.createBuffer();
-    }
+    if (that.buffer === null)
+        buffer = gl.createBuffer();
 
     that.memoryLayout = function(bufferObject) {
         size = bufferObject.size;
@@ -31,28 +33,22 @@ VR8.Buffer = function(webGLContext, that) {
     }
 
     that.geometry = function(g) {
-        this.initBuffer();
-        this.editGeometry(g);
-    }
-
-    that.editGeometry = function(g) {
-        this.initBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
         gl.bufferData(
             gl.ARRAY_BUFFER,
             new Float32Array(g.points),
-            render_type
+            bufferType
         );
 
         that.memoryLayout(g);
     }
 
-    that.setRenderType = function(renderType) {
-        if (gl[renderType] > 0) {
-            render_type = gl[renderType];
-            console.log('render type-> ', renderType);
-        }
+    that.setBufferType = function(type) {
+        if (gl[type] > 0)
+            bufferType = gl[type];
+
+        console.log('render type-> ', renderType);
     }
 
 
@@ -60,7 +56,7 @@ VR8.Buffer = function(webGLContext, that) {
         gl.bufferData(
             gl.ARRAY_BUFFER,
             new Float32Array(g.points),
-            render_type
+            bufferType
         );
     }
 
@@ -93,6 +89,7 @@ VR8.Buffer = function(webGLContext, that) {
     }
 
     that.upload_colors = function(shader_color) {
+
         if (no_color_data)
             return;
 
@@ -106,6 +103,6 @@ VR8.Buffer = function(webGLContext, that) {
     }
 
     return that;
-}
+};
 
-modules.export = Buffer;
+module.exports = new Factory(Buffer);

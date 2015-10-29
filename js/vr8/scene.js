@@ -1,25 +1,29 @@
-var Scene2D = function(that) {
+'use strict'
+
+var Factory = require('../utils/factory');
+
+var Scene = function(Core, that) {
 
     var that = that || {};
-    var Width = VR8.W;
-    var Height = VR8.H;
-    var gl = VR8.webGL;
+    var gl = Core;
 
     var shader = null;
     var camera = null;
 
-    gl.viewport(0, 0, Width, Height);
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-
     /* this method can be override for custom functionality. */
+
+    that.setViewPort = function(Width, Height){
+      gl.viewport(0, 0, Width, Height);
+    }
 
     that.setClearColor = function(clear){
         gl.clearColor(clear.r , clear.g , clear.b, 1.0);
     }
 
-    this.clean = function() {
+    that.clean = function() {
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
@@ -37,8 +41,7 @@ var Scene2D = function(that) {
 
         if (entity.texture)
             entity.texture.prepare(this.shader.vars);
-
-    }
+    };
 
     that.draw = function(entity) {
         if (typeof gl[entity.drawType] === 'number')
@@ -51,7 +54,8 @@ var Scene2D = function(that) {
         that.prepare(e);
         that.draw(e);
     }
+    return that;
 }
 
 
-module.exports = Scene2D;
+module.exports = new Factory(Scene);

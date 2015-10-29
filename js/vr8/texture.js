@@ -1,6 +1,10 @@
-var Texture = function() {
+'use strict'
+
+var Factory = require('../utils/factory');
+
+var Texture = function(Core) {
     this.texture = 0;
-    this.gl = VR8.webGL;
+    this.gl = Core;
     
     this.initialize = false; 
 }
@@ -26,7 +30,6 @@ Texture.prototype.loadImage = function(image) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-
     gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
@@ -42,4 +45,4 @@ Texture.prototype.prepare = function(shader_vars) {
 }
 
 
-module.export = Texture;
+module.exports = new Factory(Texture);

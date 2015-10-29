@@ -1,10 +1,16 @@
 (function() {
 
     var a = document.getElementById('canvas-surface');
-    
 
-    /* VR8 Lib  */    
-    var core = new VR8.Core(true, document.getElementById('webgl-div'));
+    var Core = require('../js/vr8/core');
+    var Buffer = require('../js/vr8/buffer');
+    var Shader = require('../js/vr8/shader');
+    var Texture = require('../js/vr8/texture');
+
+
+    /* VR8 Lib  */
+    var core = new Core(true, document.getElementById('webgl-div'));
+debugger;
     var buffer = new VR8.Buffer();
     var shader = new VR8.Shader();
     var camera = VR8.Camera.MakeOrtho(0, 50, 50, 0, 1, -1);
@@ -133,42 +139,42 @@
 
     */
 
-  texture.Extend({
-            initialize: function() {
+    texture.Extend({
+        initialize: function() {
 
-                var gl = this.gl;    
-                var pix = []; 
-                var textureSize = 512;
+            var gl = this.gl;
+            var pix = [];
+            var textureSize = 512;
 
-                for(var x=0; x<textureSize; x++){
-                   for(var y=0; y<textureSize; y++){
-                     var xor = x ^ y; 
-                     pix.push(xor)  // r
-                     pix.push(xor)  // g
-                     pix.push(xor)  // b 
-                   }
+            for (var x = 0; x < textureSize; x++) {
+                for (var y = 0; y < textureSize; y++) {
+                    var xor = x ^ y;
+                    pix.push(xor) // r
+                    pix.push(xor) // g
+                    pix.push(xor) // b 
                 }
-         
-
-                var pixels = new Uint8Array(pix);
+            }
 
 
+            var pixels = new Uint8Array(pix);
 
-                gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-                gl.bindTexture(gl.TEXTURE_2D, this.texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, textureSize, textureSize, 0, gl.RGB,
+
+
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, textureSize, textureSize, 0, gl.RGB,
                 gl.UNSIGNED_BYTE, pixels);
 
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
         }
-    });  
+    });
 
 
 
-window.texture = texture;
+    window.texture = texture;
 
- render();
+    render();
 
 }());
