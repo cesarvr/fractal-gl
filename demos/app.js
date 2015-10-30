@@ -25,3 +25,5 @@ var cameraMtx = camera.MakeOrtho(0, 50, 50, 0, 1, -1);
 scene.setViewPort(core.canvas.x, core.canvas.y);
 
 
+
+

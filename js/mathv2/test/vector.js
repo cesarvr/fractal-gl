@@ -105,6 +105,41 @@ describe('Vector', function() {
         assert.strictEqual(z.z, 6, 'equal 6');
     });
 
+    it('Vector4 # Add', function() {
+        var Vec4 = vector.Vec4;
+        var a = Vec4.New(1, 2, 3,1);
+        var b = Vec4.New(4, 4, 4,1);
+
+        a.add(b);
+        assert.strictEqual(a.x, 5, 'equal 5');
+        assert.strictEqual(a.y, 6, 'equal 6');
+        assert.strictEqual(a.z, 7, 'equal 7');
+        assert.strictEqual(a.w, 2, 'equal 2');
+    });
+
+    it('Vector4 # Sub', function() {
+        var Vec4 = vector.Vec4;
+        var a = Vec4.New(1, 2, 3,1);
+        var b = Vec4.New(1, 2, 3,1);
+
+        a.sub(b);
+        assert.strictEqual(a.x, 0, 'equal 0');
+        assert.strictEqual(a.y, 0, 'equal 0');
+        assert.strictEqual(a.z, 0, 'equal 0');
+        assert.strictEqual(a.w, 0, 'equal 0');
+    });
+
+    it('Vector4 # Dot product', function() {
+        var Vec4 = vector.Vec4;
+        var a = Vec4.New(1, 2, 3,4);
+        var b = Vec4.New(1, 1, 2,1);
+
+        var d = a.dot(b);
+        assert.strictEqual(d, 13, 'equal 13');
+    });
+
+
+
 
 
 

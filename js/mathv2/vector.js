@@ -69,7 +69,7 @@ var Vector3 = function(x, y, z) {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     };
 
-    this.len = function(){ 
+    this.len = function() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     };
 
@@ -110,7 +110,7 @@ var Vector3 = function(x, y, z) {
 
     this.copy = function() {
         return new Vector3(this.x, this.y, this.z);
-    }
+    };
 
     this.project = function(b) {
         var ab = this.dot(b);
@@ -120,16 +120,43 @@ var Vector3 = function(x, y, z) {
     };
 };
 
-var Vec4 = function(x, y, v, w) {
+var Vector4 = function(x, y, z, w) {
     this.x = x || 0.0;
     this.y = y || 0.0;
     this.z = z || 0.0;
     this.w = w || 0.0;
 
+    this.set = function(x, y, z, w) {
+        this.x = x || 0.0;
+        this.y = y || 0.0;
+        this.z = z || 0.0;
+        this.w = w || 0.0;
+
+
+    };
+
     this.dot = function(v) {
         return (this.x * v.x) + (this.y * v.y) + (this.z * v.z) + (this.w * v.w);
     };
-}
+
+    this.add = function(v) {
+        this.x += v.x;
+        this.y += v.y;
+        this.z += v.z;
+        this.w += v.w;
+
+        return this;
+    };
+
+    this.sub = function(v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        this.z -= v.z;
+        this.w -= v.w;
+
+        return this;
+    };
+};
 
 
 
@@ -201,16 +228,19 @@ v3.lerp = function(v1, v2, t) {
 };
 
 module.exports = {
+
     Vec3: {
         New: function(x, y, z) {
             return new Vector3(x, y, z);
         }
     },
+
     Vec4: {
         New: function(x, y, z, w) {
             return new Vector4(x, y, z, w);
         }
     },
+
     Vec3Fn: v3,
     Lerp: LerpFn,
 };
