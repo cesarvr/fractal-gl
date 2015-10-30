@@ -18,17 +18,17 @@ Buffer = function(Core, that) {
     var vertex_size = 3;
     var texture_size = 2;
 
-    var no_color_data = true;
-    var no_texture = true;
+    var no_color_data = false;
+    var no_texture = false;
 
 
 
-    if (that.buffer === null)
+    if (buffer === null)
         buffer = gl.createBuffer();
 
     that.memoryLayout = function(bufferObject) {
         size = bufferObject.size;
-        sides = bufferObject.points.length / bufferObject.size;
+        that.sides = bufferObject.points.length / bufferObject.size;
         stride = bufferObject.size * Float32Array.BYTES_PER_ELEMENT;
     }
 
@@ -51,6 +51,10 @@ Buffer = function(Core, that) {
         console.log('render type-> ', renderType);
     }
 
+
+    that.prepare = function(){
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    };
 
     that.update = function(g) {
         gl.bufferData(

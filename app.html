@@ -42,30 +42,37 @@
 
 
 <script id="vertex-shader" type="vertex">
-    attribute vec3 position;
-    attribute vec4 colors;
 
-    uniform mat4 MV;
-    uniform mat4 P;
-    varying vec4 frag_color;
+     attribute vec3 position;
+     attribute vec2 texture;  
+     attribute vec4 colors;  
 
-    void main(void) {
+     uniform mat4 MV;
+     uniform mat4 P;
+     
+     varying vec2 oTexture;
+     varying vec4 oColors;
+
+    void main(void) { 
       gl_Position = MV * P * vec4(position, 1.0);
-      frag_color = colors;
-      gl_PointSize = 2.0;
-    }
+      oTexture = texture;
+      oColors  = colors;
+     }
+
 </script>
 
 
 <script id="fragment-shader" type="fragment">
+    
     precision mediump float;
-    varying vec4 frag_color;
-
+    varying vec2 oTexture;
+    varying vec4 oColors;
+    uniform sampler2D uSampler;
 
     void main(void) {
-        gl_FragColor = frag_color;
-
+        gl_FragColor =  oColors;
     }
+
 </script>
 
 

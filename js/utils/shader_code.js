@@ -48,6 +48,7 @@ VR8.Script.init = function(shader) {
     shader
         .attribute('position')
         .attribute('texture')
+        .attribute('colors')
         .uniform('MV')
         .uniform('uSampler')
         .uniform('P');

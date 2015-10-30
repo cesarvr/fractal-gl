@@ -33,11 +33,10 @@ var Scene = function(Core, that) {
             'P': entity.model
         });
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer.buffer);
-
+        entity.buffer.prepare();
         entity.buffer.upload_vertex(this.shader.vars.position);
-        entity.buffer.upload_texture(this.shader.vars.texture);
         entity.buffer.upload_colors(this.shader.vars.colors);
+        entity.buffer.upload_texture(this.shader.vars.texture);
 
         if (entity.texture)
             entity.texture.prepare(this.shader.vars);
