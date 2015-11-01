@@ -213,8 +213,6 @@ describe('Matrix4', function() {
 
       m.multiply(tm);
 
-      p(m);
-
         var a = m.row1;
         assert.strictEqual(a.x, 0, 'equal 0');
         assert.strictEqual(a.y, 0, 'equal 0');
@@ -239,7 +237,6 @@ describe('Matrix4', function() {
         assert.strictEqual(a.z, 4, 'equal 4');
         assert.strictEqual(a.w, 18, 'equal 18');
 
-        pmtx(m.getMatrix());
 
 
     });

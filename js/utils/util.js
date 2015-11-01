@@ -4,7 +4,7 @@ var Factory = require('../utils/factory');
 
 var Utils = function() {
 
-/* loading HTML5 rendering API */
+    /* loading HTML5 rendering API */
     this.getNextFrame = (function() {
         return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -28,13 +28,41 @@ var Utils = function() {
             }
             img.src = image;
         });
-    }
+    };
 
-    this.ShaderUtil = require('./shader');
+    this.getCode = function(EL, from) {
+        return EL.querySelector(from).innerHTML;
+    };
 
+
+    this.loadShader = function(tmpl) {
+        var el = document.createElement('div');
+        el.innerHTML = tmpl;
+        return el;
+    };
+
+    this.getshaderUsingTemplate = function(tmpl) {
+        var EL = this.loadShader(tmpl);
+        var shader = {};
+
+        shader.vertex = this.getCode(EL, '#vertex-shader');
+        shader.fragment = this.getCode(EL, '#fragment-shader');
+
+        shader.init = function(shader) {
+            shader.use();
+            shader
+                .attribute('position')
+                .attribute('texture')
+                .attribute('colors')
+                .uniform('MV')
+                .uniform('uSampler')
+                .uniform('P');
+        }
+
+        return shader;
+    };
 }
 
 
 
 module.exports = new Factory(Utils);
-

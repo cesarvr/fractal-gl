@@ -45,55 +45,67 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var DIR = '../js/vr8/';
+	var tmpl = __webpack_require__(18);
+	var Core = __webpack_require__(2);
 
-	var Core = __webpack_require__(1);
-	var Buffer = __webpack_require__(2);
-	var Shader = __webpack_require__(8);
-	var Texture = __webpack_require__(9);
-	var Camera = __webpack_require__(10);
-	var Scene = __webpack_require__(11);
-	var Geometry = __webpack_require__(12);
+	var core = new Core({
+	    fullscreen: true,
+	    element: document.getElementById('webgl-div')
+	});
 
-	var core = new Core(true, document.getElementById('webgl-div'));
+	var buffer  = core.createBuffer();
+	var shader  = core.createShader();
+	var texture = core.createTexture();
 
-	var webGL = core.getWebGL();
-	var buffer = Buffer.New(webGL);
-	var shader = Shader.New(webGL);
-	var texture = Texture.New(webGL);
+	var scene = core.createScene();
+	var Utils = core.getUtils();
 
-	var scene = Scene.New(webGL);
-	var camera = Camera.New();
 
-	var Utils = __webpack_require__(16).New();
 
 	/* config */
 	scene.setViewPort(core.canvas.x, core.canvas.y);
 	scene.shader = shader;
-	scene.camera = camera.MakeOrtho(0, 50, 50, 0, 1, -1);
+	scene.camera = Utils.camera.MakeOrtho(0, 50, 50, 0, 1, -1);
 
-	shader.create(Utils.ShaderUtil);
+	shader.create(Utils.util.getshaderUsingTemplate(tmpl()));
 	/*         */
 
-	var Poly = Geometry.Polygon.New();
-
-	var Transform = Geometry.libs.Transform.New();
+	var geometry = core.createGeometry();
 
 	buffer.geometry({
-	    points: Poly.circle(20, 10).getModel(),
+	    points: geometry.plane(10, 15).getModel(),
 	    size: 9
 	});
 
+
+
+	/* Generarting XOR Texture */
+	var textureSize = 512;
+	var pix = [];
+
+	for (var x = 0; x < textureSize; x++) {
+	    for (var y = 0; y < textureSize; y++) {
+	        var xor = x ^ y;
+	        pix.push(xor) // r
+	        pix.push(xor) // g
+	        pix.push(xor) // b 
+	    }
+	}
+	/* */
+
+	texture.setTexture(new Uint8Array(pix), textureSize, textureSize);
+
+	var Transform = core.MLib.Transform.New();
 	var entity = {
 	    buffer: buffer,
 	    model: Transform.translate(25, 25).getMatrix(),
-	    drawType: 'LINES'
+	    drawType: 'TRIANGLE_STRIP',
+	    texture: texture,
 	};
 
 	function render() {
-
 	    //Utils.getNextFrame.call(this, render);
-	    window.requestAnimationFrame(render);
+	    //window.requestAnimationFrame(render);
 	    scene.clean();
 	    scene.render(entity);
 	};
@@ -102,69 +114,80 @@
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
+/* 1 */,
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Core = function(fullscreen, el) {
-	    var _createCanvas = function() {
-	        _canvas = document.createElement('CANVAS');
-	        _canvas.setAttribute('width', 800);
-	        _canvas.setAttribute('height', 600);
-	        _canvas.setAttribute('style', 'position:absolute; left:0px; top:0px; border-style:none;');
-	        return _canvas;
-	    }
 
 
-	    var _canvas = _createCanvas();
-	    var $el = el || document.body;
+	var Core = function(options) {
+	    var CanvasGL = __webpack_require__(19);
 
-	    $el.appendChild(_canvas);
+	    this.Buffer = __webpack_require__(3);
+	    this.Shader = __webpack_require__(9);
+	    this.Texture = __webpack_require__(10);
+	    this.Camera = __webpack_require__(11);
+	    this.Scene = __webpack_require__(12);
+	    this.Geometry = __webpack_require__(13);
 
-	    try {
+	    var core = new CanvasGL(options.fullscreen, options.element);
+	    var webGL = core.getWebGL();
 
-	        var gl = _canvas.getContext("experimental-webgl");
 
-	        if (!gl) {
-	            console.log('Error no webGL context found.');
-	            alert('no WebGL context found.')
-	        }
-
-	        if (fullscreen) {
-	            _canvas.style.width = window.innerWidth + "px";
-	            _canvas.style.height = window.innerHeight + "px";
-	            _canvas.width = window.innerWidth;
-	            _canvas.height = window.innerHeight;
-	        }
-
-	    } catch (e) {
-	        console.log(e);
-	    }
-
-	    return {
-	        getWebGL: function() {
-	            return gl;
-	        },
-	        canvas: {
-	            x: _canvas.width,
-	            y: _canvas.height
-	        },
-	        fullscreen: fullscreen,
+	    this.canvas = core.canvas;
+	    this.createBuffer = function() {
+	        return this.Buffer.New(webGL);
 	    };
-	}
+
+	    this.createShader = function() {
+	        return this.Shader.New(webGL);
+	    };
+
+	    this.createTexture = function() {
+	        return this.Texture.New(webGL);
+	    };
+
+	    this.createScene = function() {
+	        return this.Scene.New(webGL);
+	    };
+
+	    this.createGeometry = function() {
+	        return this.Geometry.New();
+	    };
+
+	    this.getUtils = function() {
+	        return {
+	            camera: this.Camera.New(),
+	            util: __webpack_require__(17).New()
+	        };
+	    };
+
+
+	    this.MLib = {
+	        Vec3: __webpack_require__(14).Vec3,
+	        Vec4: __webpack_require__(14).Vec4,
+	        Mat4: __webpack_require__(15),
+	        Transform: __webpack_require__(16),
+	    };
+	};
+
+
+
+
 
 
 	module.exports = Core;
 
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
 	Buffer = function(Core, that) {
 
@@ -275,10 +298,10 @@
 
 	module.exports = new Factory(Buffer);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -289,9 +312,9 @@
 	 */
 	/* eslint-disable no-proto */
 
-	var base64 = __webpack_require__(4)
-	var ieee754 = __webpack_require__(5)
-	var isArray = __webpack_require__(6)
+	var base64 = __webpack_require__(5)
+	var ieee754 = __webpack_require__(6)
+	var isArray = __webpack_require__(7)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -1826,10 +1849,10 @@
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -1959,7 +1982,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -2049,7 +2072,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	
@@ -2088,7 +2111,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2107,12 +2130,12 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
 	var Shader = function(Core, that) {
 	    var gl = Core;
@@ -2188,14 +2211,14 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
-	var Texture = function(Core) {
+	/*var Texture = function(Core) {
 	    this.texture = 0;
 	    this.gl = Core;
 	    
@@ -2207,6 +2230,7 @@
 	    options.initialize.bind(this)();
 	    this.initialize = true; 
 	}
+
 
 
 	Texture.prototype.loadImage = function(image) {
@@ -2236,18 +2260,48 @@
 	    gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	    gl.uniform1i(shader_vars['uSampler'], 0);
 	}
+	*/
+
+	var Texture = function(Core, that) {
+	    var gl = Core;
+	    that.texture = gl.createTexture();
+
+
+	    that.setTexture = function( pixels, width, height) {
+
+	        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+	        gl.bindTexture(gl.TEXTURE_2D, that.texture);
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB,
+	            gl.UNSIGNED_BYTE, pixels);
+
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+	    };
+
+	    that.prepare = function(vars) {
+	        if (!this.initialize) return;
+
+	        gl.activeTexture(gl.TEXTURE0);
+	        gl.bindTexture(gl.TEXTURE_2D, that.texture);
+	        gl.uniform1i(vars['uSampler'], 0);
+	    };
+
+	    return that;
+	};
+
 
 
 	module.exports = new Factory(Texture);
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
 	var Camera = function(){
 	};
@@ -2269,12 +2323,12 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
 	var Scene = function(Core, that) {
 
@@ -2327,6 +2381,7 @@
 	        that.prepare(e);
 	        that.draw(e);
 	    }
+
 	    return that;
 	}
 
@@ -2335,24 +2390,34 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
-	var Vec3 = __webpack_require__(13).Vec3;
-	var Vec4 = __webpack_require__(13).Vec4;
-	var Mat4 =  __webpack_require__(14);
-	var Transform =  __webpack_require__(15);
+	var Factory = __webpack_require__(8);
+	var Vec3 = __webpack_require__(14).Vec3;
+	var Vec4 = __webpack_require__(14).Vec4;
+	var Mat4 =  __webpack_require__(15);
+	var Transform =  __webpack_require__(16);
 
 	var Renderable = function(geometry, color, texture) {
-	    this.geometry = geometry || Vec3.NewG();
+	    this.geometry = geometry || Vec3.New();
 	    this.color = color || Vec4.New(0.5, 0.5, 0.5, 1.0);
-	    this.texture = texture || {
+	    this.texture = setUV(this.geometry) || {
 	        u: 0,
 	        v: 0
 	    };
+	};
+
+
+	var setUV = function(vec2){
+	    var texture = {u:0, v:0};
+
+
+	    var tmp = vec2.normalize();
+
+	    return {u: Math.ceil(tmp.x) , v: Math.ceil(tmp.y)};
 	};
 
 	var Polygon = function(Core, that) {
@@ -2382,7 +2447,15 @@
 	    };
 
 
-	    that.circle = function(_sides, radius) {
+	    that.plane = function(width, height){
+	        that.geometry.push( new Renderable( Vec3.New(-width, -height ), Vec4.New(0.8, 0.8, 0.8, 1.0 )));
+	        that.geometry.push( new Renderable( Vec3.New(width,  -height ), Vec4.New(0.8, 0.8, 0.8, 1.0 )));
+	        that.geometry.push( new Renderable( Vec3.New(-width,  height ), Vec4.New(0.8, 0.8, 0.8, 1.0 )));
+	        that.geometry.push( new Renderable( Vec3.New(width,   height ), Vec4.New(0.8, 0.8, 0.8, 1.0 )));
+	        return that;
+	    };
+
+	    that.circle = function( _sides, radius) {
 
 	        var cos = Math.cos;
 	        var sin = Math.sin;
@@ -2394,7 +2467,10 @@
 
 	        for (var x = 0; x <= ucircle; x += (ucircle / sides)) {
 	            var vertex = Vec3.New(radius * cos(x), radius * sin(x));
-	            that.geometry.push(new Renderable(vertex))
+	            console.log('->', vertex);
+	            that.geometry.push( new Renderable( vertex, Vec4.New(0.8, 0.8, 0.8, 1.0 ), setUV(vertex) ) );
+	            
+	           // that.geometry.push( new Renderable( Vec3.New(), Vec4.New(), setUV(Vec3.New()) ) ); //center.
 	        }
 
 	        return that;
@@ -2404,19 +2480,11 @@
 	};
 
 
-	module.exports = {
-	    Polygon: new Factory(Polygon),
-	    libs: {
-	        Vec3: Vec3,
-	        Vec4: Vec4,
-	        Mat4: Mat4,
-	        Transform: Transform,
-	    }
-	};
+	module.exports = new Factory(Polygon);
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	var Vector3 = function(x, y, z) {
@@ -2668,10 +2736,10 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Vec4 = __webpack_require__(13).Vec4;
+	var Vec4 = __webpack_require__(14).Vec4;
 
 
 	/*
@@ -2806,11 +2874,11 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Vec4 = __webpack_require__(13).Vec4;
-	var Mat4 = __webpack_require__(14);
+	var Vec4 = __webpack_require__(14).Vec4;
+	var Mat4 = __webpack_require__(15);
 
 
 	var Transform = function(m) {
@@ -2847,16 +2915,16 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var Factory = __webpack_require__(7);
+	var Factory = __webpack_require__(8);
 
 	var Utils = function() {
 
-	/* loading HTML5 rendering API */
+	    /* loading HTML5 rendering API */
 	    this.getNextFrame = (function() {
 	        return window.requestAnimationFrame ||
 	            window.webkitRequestAnimationFrame ||
@@ -2880,10 +2948,39 @@
 	            }
 	            img.src = image;
 	        });
-	    }
+	    };
 
-	    this.ShaderUtil = __webpack_require__(17);
+	    this.getCode = function(EL, from) {
+	        return EL.querySelector(from).innerHTML;
+	    };
 
+
+	    this.loadShader = function(tmpl) {
+	        var el = document.createElement('div');
+	        el.innerHTML = tmpl;
+	        return el;
+	    };
+
+	    this.getshaderUsingTemplate = function(tmpl) {
+	        var EL = this.loadShader(tmpl);
+	        var shader = {};
+
+	        shader.vertex = this.getCode(EL, '#vertex-shader');
+	        shader.fragment = this.getCode(EL, '#fragment-shader');
+
+	        shader.init = function(shader) {
+	            shader.use();
+	            shader
+	                .attribute('position')
+	                .attribute('texture')
+	                .attribute('colors')
+	                .uniform('MV')
+	                .uniform('uSampler')
+	                .uniform('P');
+	        }
+
+	        return shader;
+	    };
 	}
 
 
@@ -2891,33 +2988,70 @@
 	module.exports = new Factory(Utils);
 
 
-
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
-	
-	var Script = {};
-
-	function getCode(from){
-	    return document.getElementById(from).innerHTML;
+	module.exports = function (data) {
+	var __t, __p = '';
+	__p += '<script id="vertex-shader" type="vertex">\n\n     attribute vec3 position;\n     attribute vec2 texture;  \n     attribute vec4 colors;  \n\n     uniform mat4 MV;\n     uniform mat4 P;\n     \n     varying vec2 oTexture;\n     varying vec4 oColors;\n\n    void main(void) { \n      gl_Position = MV * P * vec4(position, 1.0);\n      oTexture = texture;\n      oColors  = colors;\n     }\n\n</script>\n\n\n<script id="fragment-shader" type="fragment">\n    \n    precision mediump float;\n    varying vec2 oTexture;\n    varying vec4 oColors;\n    uniform sampler2D uSampler;\n\n    void main(void) {\n        gl_FragColor = texture2D(uSampler, oTexture) * oColors;\n    }\n\n</script>\n\n';
+	return __p
 	}
 
-	Script.vertex = getCode('vertex-shader');
-	Script.fragment = getCode('fragment-shader');
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
 
-	Script.init = function(shader) {
-	    shader.use();
-	    shader
-	        .attribute('position')
-	        .attribute('texture')
-	        .attribute('colors')
-	        .uniform('MV')
-	        .uniform('uSampler')
-	        .uniform('P');
+	'use strict';
+
+	var Canvas = function(fullscreen, el) {
+	    var _createCanvas = function() {
+	        _canvas = document.createElement('CANVAS');
+	        _canvas.setAttribute('width', 800);
+	        _canvas.setAttribute('height', 600);
+	        _canvas.setAttribute('style', 'position:absolute; left:0px; top:0px; border-style:none;');
+	        return _canvas;
+	    }
+
+
+	    var _canvas = _createCanvas();
+	    var $el = el || document.body;
+
+	    $el.appendChild(_canvas);
+
+	    try {
+
+	        var gl = _canvas.getContext("experimental-webgl");
+
+	        if (!gl) {
+	            console.log('Error no webGL context found.');
+	            alert('no WebGL context found.')
+	        }
+
+	        if (fullscreen) {
+	            _canvas.style.width = window.innerWidth + "px";
+	            _canvas.style.height = window.innerHeight + "px";
+	            _canvas.width = window.innerWidth;
+	            _canvas.height = window.innerHeight;
+	        }
+
+	    } catch (e) {
+	        console.log(e);
+	    }
+
+	    return {
+	        getWebGL: function() {
+	            return gl;
+	        },
+	        canvas: {
+	            x: _canvas.width,
+	            y: _canvas.height
+	        },
+	        fullscreen: fullscreen,
+	    };
 	}
 
-	module.exports = Script;
+	module.exports = Canvas;
 
 
 /***/ }

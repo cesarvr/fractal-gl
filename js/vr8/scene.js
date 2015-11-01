@@ -53,6 +53,7 @@ var Scene = function(Core, that) {
         that.prepare(e);
         that.draw(e);
     }
+
     return that;
 }
 

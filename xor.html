@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>fractals</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+
+    <style>
+        #code{
+            position: absolute;
+            height: 500px;
+            width: 600px;
+            color: white;
+            font-family: courier;
+            font-size: 70%;
+            opacity: 0.2;
+        }
+        #code:hover{
+            background-color: #3f3f3f;
+            opacity: 0.8;
+        }
+
+        p {
+            color: #e3ceab; 
+            position: absolute;
+            opacity: 0.5;
+            left: 85%;
+                
+        }
+
+        #code:hover p {
+            color: white; 
+            opacity: 0.5;
+        }
+
+    </style>
+
+    </head>
+
+<body>
+    <div id="webgl-div"></div>
+</body>
+
+
+<script id="vertex-shader" type="vertex">
+
+     attribute vec3 position;
+     attribute vec2 texture;  
+     attribute vec4 colors;  
+
+     uniform mat4 MV;
+     uniform mat4 P;
+     
+     varying vec2 oTexture;
+     varying vec4 oColors;
+
+    void main(void) { 
+      gl_Position = MV * P * vec4(position, 1.0);
+      oTexture = texture;
+      oColors  = colors;
+     }
+
+</script>
+
+
+<script id="fragment-shader" type="fragment">
+    
+    precision mediump float;
+    varying vec2 oTexture;
+    varying vec4 oColors;
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSampler, oTexture) * oColors;
+    }
+
+</script>
+
+
+  <script src="http://localhost:8080/webpack-dev-server.js"></script>
+  <script src="xor.js"></script>
+
+  <!-- <script src="demos/thread/koch_process.js"></script> -->
+</html>
