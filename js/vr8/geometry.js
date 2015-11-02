@@ -8,7 +8,7 @@ var Transform =  require('../mathv2/transform');
 
 var Renderable = function(geometry, color, texture) {
     this.geometry = geometry || Vec3.New();
-    this.color = color || Vec4.New(0.5, 0.5, 0.5, 1.0);
+    this.color = color || Vec4.New(0.9, 0.9, 0.9, 1.0);
     this.texture = setUV(this.geometry) || {
         u: 0,
         v: 0

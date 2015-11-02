@@ -1,6 +1,10 @@
 'use strict';
 var tmpl = require('../template/xor.html');
 var Core = require('../vr8/core');
+var Noise = require('./noise');
+
+
+
 
 var core = new Core({
     fullscreen: true,
@@ -34,17 +38,37 @@ buffer.geometry({
 
 
 /* Generarting XOR Texture */
-var textureSize = 512;
+var textureSize = 64;
 var pix = [];
+var noi = [];
 
+var noise = new Noise();
 for (var x = 0; x < textureSize; x++) {
+    for (var y = 0; y < textureSize; y++) {
+      noi.push(  noise.makeNoise(x,y, 4, 1, 1, 2)  );
+    }
+} 
+
+
+console.log(noi);
+noi.forEach(function(noise){
+    pix.push(200*noise); //r
+    pix.push(200*noise); //g
+    pix.push(200*noise); //b
+});
+
+
+
+/* for (var x = 0; x < textureSize; x++) {
     for (var y = 0; y < textureSize; y++) {
         var xor = x ^ y;
         pix.push(xor) // r
         pix.push(xor) // g
         pix.push(xor) // b 
     }
-}
+}*/
+
+
 /* */
 
 texture.setTexture(new Uint8Array(pix), textureSize, textureSize);
