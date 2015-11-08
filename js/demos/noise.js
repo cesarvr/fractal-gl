@@ -1,77 +1,119 @@
 var Noise = function() {
 
-    this.cosineInterpolation = function(x1, x2, t) {
-        var fnt = t * Math.PI;
-        var f = (1 - Math.cos(fnt)) * 0.5;
-        return x1 * (1 - f) + x2 * f;
-    };
+    var p = [];
+    var permutation = [151, 160, 137, 91, 90, 15, // Hash lookup table as defined by Ken Perlin.  This is a randomly
+        131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, // arranged array of all numbers from 0-255 inclusive.
+        190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33,
+        88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166,
+        77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244,
+        102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169, 200, 196,
+        135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186, 3, 64, 52, 217, 226, 250, 124, 123,
+        5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59, 227, 47, 16, 58, 17, 182, 189, 28, 42,
+        223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9,
+        129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228,
+        251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107,
+        49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254,
+        138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180
+    ];
 
-
-    var rand = function(a, b) {
-        var x = a + b * 57;
-        x = (x << 13) ^ x;
-        return (1 - ((x * (x * x * 19417 + 189851) + 4967243) & 4945007) / 3354521.0);
+    var plen = permutation.length;
+    for (var i = 0; i < 512; i++) {
+        p[i] = permutation[i % 256];
     }
 
-    var rand3 = function(min, max) {
-        return Math.random() * (max - min) + min;
+
+
+    function lerp(t, a, b) {
+        return a + t * (b - a);
     }
 
-/*
-    var rand = function() {
-        var mp = [];
-        for (var a = 0; a < 4000000; a++) {
-            mp.push(rand3(-1, 1));
+    /* curve equation */
+    function fade(t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+    }
+
+    function grad(hash, x, y,z) {
+        
+
+        switch(hash & 0xF)
+        {
+            case 0x0: return  x + y;
+            case 0x1: return -x + y;
+            case 0x2: return  x - y;
+            case 0x3: return -x - y;
+            case 0x4: return  x + z;
+            case 0x5: return -x + z;
+            case 0x6: return  x - z;
+            case 0x7: return -x - z;
+            case 0x8: return  y + z;
+            case 0x9: return -y + z;
+            case 0xA: return  y - z;
+            case 0xB: return -y - z;
+            case 0xC: return  y + x;
+            case 0xD: return -y + z;
+            case 0xE: return  y - x;
+            case 0xF: return -y - z;
+            default: return 0; // never happens
         }
 
-        return function(a, b) {
-            return mp[a] + mp[b];
-        }
-    }();
-*/
-
-    /* generate random number between -1 and 1 */
-    var rand2 = function() {
-        return (Math.random() * (0 - 2) + 1)
     }
 
-    var takeDecimal = function(n) {
-        return n - Math.round(n);
-    }
 
-    this.mnoise = function(x, y) {
-        var intX = Math.round(x);
-        var intY = Math.round(y);
-        var fracX = takeDecimal(x);
-        var fracY = takeDecimal(y);
 
-        var v1, v2, v3, v4;
+    this.perlin = function(x, y, z) {
+        var X = Math.round(x) & 255;
+        var Y = Math.round(y) & 255;
+        var Z = Math.round(z) & 255;
 
-        v1 = rand(x, y);
-        v2 = rand(x + 1, y);
-        v3 = rand(x, y + 1);
-        v4 = rand(x + 1, y + 1);
+        var fx = x - X; //fractional part.
+        var fy = y - Y;
+        var fz = z - Z;
 
-        var i1 = this.cosineInterpolation(v1, v2, fracX);
-        var i2 = this.cosineInterpolation(v3, v4, fracX);
+        var u = fade(fx);
+        var v = fade(fy);
+        var w = fade(fz);
+        /*
+            AA               BA
+            +---------------+
+            |               |
+            |               |
+            |  p(x,y)       |
+            |               |
+            |               | 
+            +---------------+
+            BA               BB
 
-        return this.cosineInterpolation(i1, i2, fracY);
+            
+            some pseudo-random magic.
+
+        */
+
+        var AA, BB, AB, BA;
+
+        var A = p[X] + Y;
+        var B = p[X + 1] + Y;
+        AA = p[A] + Z;
+        BA = p[B] + Z;
+        AB = p[A + 1] + Z;
+        BB = p[B + 1] + Z;
+
+       /* var aa = grad(p[AA], x, y);
+        var ba = grad(p[BA], x - 1, y);
+        var ab = grad(p[AB], x, y - 1);
+        var bb = grad(p[BB], x - 1, y - 1);
+
+        var aaba = lerp(u, aa, ba);
+        var abbb = lerp(u, ab, bb);*/
+
+        return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
+                                     grad(p[BA  ], x-1, y  , z   )), // BLENDED
+                             lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
+                                     grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
+                     lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
+                                     grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
+                             lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
+                                     grad(p[BB+1], x-1, y-1, z-1 ))));;
     };
-
-
-    this.makeNoise = function(x, y, octaves, amplitude, frecuency, h) {
-        var ret = 0;
-        for (var i = 0; i < (octaves - 1); i++) {
-            ret += this.mnoise(x * frecuency, y * frecuency) * amplitude;
-            amplitude *= h;
-        }
-
-        //  if(ret > 12) debugger;
-
-        return ret;
-    };
-
-
 };
 
 

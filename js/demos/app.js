@@ -38,35 +38,35 @@ buffer.geometry({
 
 
 /* Generarting XOR Texture */
-var textureSize = 64;
+var textureSize = 128;
 var pix = [];
 var noi = [];
-
+/*
 var noise = new Noise();
 for (var x = 0; x < textureSize; x++) {
     for (var y = 0; y < textureSize; y++) {
-      noi.push(  noise.makeNoise(x,y, 4, 1, 1, 2)  );
+         noi.push(  noise.perlin(x,y,4)  )*8;
     }
 } 
 
 
 console.log(noi);
 noi.forEach(function(noise){
-    pix.push(200*noise); //r
-    pix.push(200*noise); //g
-    pix.push(200*noise); //b
+    pix.push(noise); //r
+    pix.push(noise); //g
+    pix.push(noise); //b
 });
+*/
 
 
-
-/* for (var x = 0; x < textureSize; x++) {
+ for (var x = 0; x < textureSize; x++) {
     for (var y = 0; y < textureSize; y++) {
         var xor = x ^ y;
         pix.push(xor) // r
         pix.push(xor) // g
         pix.push(xor) // b 
     }
-}*/
+}
 
 
 /* */
