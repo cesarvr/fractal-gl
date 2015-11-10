@@ -1,7 +1,3 @@
-var Spawn = {};
-
-(function() {
-
     var thread = function(_object) {
         var that = {};
 
@@ -69,7 +65,7 @@ var Spawn = {};
             observers.push(object);
         };
 
-        that.setProcessFile = function(filename) {
+        that.loadFile = function(filename) {
             processFile = filename;
         };
 
@@ -100,14 +96,12 @@ var Spawn = {};
 
     
 
-    Spawn = {
+    var SWorker = {
         Thread: thread,
         Server: server
     };
 
     if(typeof DedicatedWorkerGlobalScope ==='undefined' ){
-        window.Spawn = Spawn;
+       
+        module.exports = SWorker;
     }
-
-
-}());
