@@ -1,6 +1,8 @@
 'use strict'
 
 var Factory = require('../utils/factory');
+var Vector  = require('../mathv2/vector');
+var Matrix  = require('../utils/factory');
 
 var Camera = function(){
 };
@@ -17,5 +19,17 @@ Camera.prototype.MakeOrtho = function(left, right, bottom, top, nearz, farz) {
     m[15] = 1.0;
     return m;
 }
+
+Camera.prototype.makeLookAt = function(v3Eye, v3Center, v3Up){
+
+    var F = v3Center.sub(v3Eye).normalize(); 
+    var U = v3Up.normalize();
+    var S = F.cross(U).normalize();
+
+    U = S.cross(F);
+
+}
+
+
 
 module.exports = new Factory(Camera);

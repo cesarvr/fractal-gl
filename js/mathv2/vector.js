@@ -114,9 +114,10 @@ var Vector3 = function(x, y, z) {
 
     this.project = function(b) {
         var ab = this.dot(b);
-        var proj = ab / b.magnitude();
-        var vnorm = b.normalize();
-        return vnorm.multiplyByScalar(proj);
+        var len = b.magnitude();
+        var proj = ab / len * len;
+
+        return b.multiplyByScalar(proj);
     };
 };
 
